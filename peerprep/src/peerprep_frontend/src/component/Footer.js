@@ -1,9 +1,12 @@
 import React from "react";
 
-export default function Footer() {
+export default function Footer(props) {
+  const bg = props.bg;
+  const position = props.position;
+  let className = position + " " + bg + " " + "pt-8 pb-6";
   return (
     <>
-      <footer className="relative bg-blueGray-200 pt-8 pb-6">
+      <footer className={className}>
         <div className="container mx-auto px-4">
           <hr className="my-6 border-blueGray-300" />
           <div className="flex flex-wrap items-center md:justify-between justify-center">

@@ -6,20 +6,20 @@ import Footer from "component/Footer";
 export default function Landing() {
   return (
     <>
-      <Navbar transparent />
+      <Navbar showLoginBtn={true} showRigBtn={true}  />
       <main>
         <div className="relative pt-16 pb-32 flex content-center items-center justify-center min-h-screen-75">
           <div
             className="absolute top-0 w-full h-full bg-center bg-cover"
+
             style={{
               backgroundImage:
-                "url('../assets/img/landing_bg.jpeg')",
+                "url(" + require("../assets/img/landing_bg2.jpeg").default + ")",
             }}
           >
             <span
               id="blackOverlay"
-              className="w-full h-full absolute opacity-75 bg-black"
-            ></span>
+              className="w-full h-full absolute opacity-75 bg-black"></span>
           </div>
           <div className="container relative mx-auto">
             <div className="items-center flex flex-wrap">
@@ -107,7 +107,7 @@ export default function Landing() {
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer bg="bg-blueGray-200" position="relative" />
     </>
   );
 }

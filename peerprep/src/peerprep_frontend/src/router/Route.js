@@ -18,11 +18,11 @@ export default function Admin() {
         <UserBanner />
         <div className="px-4 md:px-10 mx-auto w-full -m-24">
           <Switch>
-            <Route path="/admin/dashboard" exact component={Dashboard} />
-            <Route path="/admin/profile" exact component={Profile} />
-            <Route path="/admin/history" exact component={History} />
-            <Route path="/admin/contactUs" exact component={ContactUs} />
-            <Redirect from="/admin" to="/admin/dashboard" />
+            <Route path="/my/dashboard" exact component={Dashboard} />
+            <Route path="/my/profile" exact component={Profile} />
+            <Route path="/my/history" exact component={History} />
+            <Route path="/my/contactUs" exact component={ContactUs} />
+            <Redirect from="/my" to="/my/dashboard" />
           </Switch>
           <Footer bg="" position="relative"/>
         </div> 

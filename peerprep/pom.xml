@@ -39,6 +39,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- MySQL -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- MyBatis Plus -->
 		<dependency>
 			<groupId>com.baomidou</groupId>

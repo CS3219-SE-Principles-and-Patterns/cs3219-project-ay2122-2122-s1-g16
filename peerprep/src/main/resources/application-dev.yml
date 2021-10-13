@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/peerprep?characterEncoding=utf-8&serverTimezone=GMT%2B8
+    username: peerprep-admin
+    password: cs3219-G16-yyds
+    driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  port: 8080

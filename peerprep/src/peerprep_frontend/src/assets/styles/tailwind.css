@@ -1224,47 +1224,47 @@ select {
   background-color: rgba(49, 46, 129, var(--tw-bg-opacity));
 }
 
-.bg-lightBlue-100 {
+.bg-sky-100 {
   --tw-bg-opacity: 1;
   background-color: rgba(224, 242, 254, var(--tw-bg-opacity));
 }
 
-.bg-lightBlue-200 {
+.bg-sky-200 {
   --tw-bg-opacity: 1;
   background-color: rgba(186, 230, 253, var(--tw-bg-opacity));
 }
 
-.bg-lightBlue-300 {
+.bg-sky-300 {
   --tw-bg-opacity: 1;
   background-color: rgba(125, 211, 252, var(--tw-bg-opacity));
 }
 
-.bg-lightBlue-400 {
+.bg-sky-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(56, 189, 248, var(--tw-bg-opacity));
 }
 
-.bg-lightBlue-500 {
+.bg-sky-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(14, 165, 233, var(--tw-bg-opacity));
 }
 
-.bg-lightBlue-600 {
+.bg-sky-600 {
   --tw-bg-opacity: 1;
   background-color: rgba(2, 132, 199, var(--tw-bg-opacity));
 }
 
-.bg-lightBlue-700 {
+.bg-sky-700 {
   --tw-bg-opacity: 1;
   background-color: rgba(3, 105, 161, var(--tw-bg-opacity));
 }
 
-.bg-lightBlue-800 {
+.bg-sky-800 {
   --tw-bg-opacity: 1;
   background-color: rgba(7, 89, 133, var(--tw-bg-opacity));
 }
 
-.bg-lightBlue-900 {
+.bg-sky-900 {
   --tw-bg-opacity: 1;
   background-color: rgba(12, 74, 110, var(--tw-bg-opacity));
 }
@@ -1549,7 +1549,7 @@ select {
   background-color: rgba(79, 70, 229, var(--tw-bg-opacity));
 }
 
-.active\:bg-lightBlue-600:active {
+.active\:bg-sky-600:active {
   --tw-bg-opacity: 1;
   background-color: rgba(2, 132, 199, var(--tw-bg-opacity));
 }
@@ -1584,7 +1584,7 @@ select {
   border-collapse: collapse;
 }
 
-.border-lightBlue-700 {
+.border-sky-700 {
   --tw-border-opacity: 1;
   border-color: rgba(3, 105, 161, var(--tw-border-opacity));
 }
@@ -1836,6 +1836,14 @@ select {
   height: 100%;
 }
 
+.h-screen60 {
+  height: 60vh;
+}
+
+.h-screen80 {
+  height: 80vh;
+}
+
 .h-screen {
   height: 100vh;
 }
@@ -1960,6 +1968,26 @@ select {
   margin-right: 1rem;
 }
 
+.mx-6 {
+  margin-left: 1.25rem;
+  margin-right: 1.25rem;
+}
+
+.mx-8 {
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+
+.mx-12 {
+  margin-left: 2.5rem;
+  margin-right: 2.5rem;
+}
+
+.mx-16 {
+  margin-left: 3.5rem;
+  margin-right: 3.5rem;
+}
+
 .my-6 {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
@@ -2038,6 +2066,10 @@ select {
   margin-right: 1rem;
 }
 
+.mr-8 {
+  margin-right: 2rem;
+}
+
 .mb-4 {
   margin-bottom: 1rem;
 }
@@ -2082,6 +2114,10 @@ select {
   margin-top: 4rem;
 }
 
+.mb-16 {
+  margin-bottom: 4rem;
+}
+
 .mt-20 {
   margin-top: 5rem;
 }
@@ -2092,6 +2128,10 @@ select {
 
 .mb-24 {
   margin-bottom: 6rem;
+}
+
+.mb-32 {
+  margin-bottom: 8rem;
 }
 
 .mt-32 {
@@ -2280,6 +2320,11 @@ select {
   padding-right: 0.5rem;
 }
 
+.px-28 {
+  padding-left: 14rem;
+  padding-right: 14rem;
+}
+
 .py-3 {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
@@ -2323,6 +2368,11 @@ select {
 .px-12 {
   padding-left: 3rem;
   padding-right: 3rem;
+}
+
+.px-16 {
+  padding-left: 4rem;
+  padding-right: 4rem;
 }
 
 .py-16 {
@@ -2405,6 +2455,14 @@ select {
   padding-right: 3rem;
 }
 
+.pt-14 {
+  padding-top: 3.5rem;
+}
+
+.pb-14 {
+  padding-bottom: 3.5rem;
+}
+
 .pt-16 {
   padding-top: 4rem;
 }
@@ -2439,6 +2497,18 @@ select {
 
 .pt-48 {
   padding-top: 12rem;
+}
+
+.pt-56 {
+  padding-top: 14rem;
+}
+
+.pt-64 {
+  padding-top: 16rem;
+}
+
+.pt-72 {
+  padding-top: 18rem;
 }
 
 .pb-48 {
@@ -2658,22 +2728,22 @@ select {
   color: rgba(244, 114, 182, var(--tw-text-opacity));
 }
 
-.text-lightBlue-300 {
+.text-sky-300 {
   --tw-text-opacity: 1;
   color: rgba(125, 211, 252, var(--tw-text-opacity));
 }
 
-.text-lightBlue-400 {
+.text-sky-400 {
   --tw-text-opacity: 1;
   color: rgba(56, 189, 248, var(--tw-text-opacity));
 }
 
-.text-lightBlue-500 {
+.text-sky-500 {
   --tw-text-opacity: 1;
   color: rgba(14, 165, 233, var(--tw-text-opacity));
 }
 
-.text-lightBlue-600 {
+.text-sky-600 {
   --tw-text-opacity: 1;
   color: rgba(2, 132, 199, var(--tw-text-opacity));
 }
@@ -2738,7 +2808,7 @@ select {
   color: rgba(30, 41, 59, var(--tw-text-opacity));
 }
 
-.hover\:text-lightBlue-600:hover {
+.hover\:text-sky-600:hover {
   --tw-text-opacity: 1;
   color: rgba(2, 132, 199, var(--tw-text-opacity));
 }
@@ -2830,6 +2900,10 @@ select {
 
 .w-full {
   width: 100%;
+}
+
+.f-5\/6 {
+  height: 83.3%;
 }
 
 .z-2 {

@@ -1,17 +1,17 @@
-CREATE TABLE `interview_questions` (
+CREATE TABLE IF NOT EXISTS `interview_questions` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `title` varchar(255),
   `content` text,
   `difficulty` int
 );
 
-CREATE TABLE `interview_solutions` (
+CREATE TABLE IF NOT EXISTS `interview_solutions` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `question_id` bigint,
   `content` text
 );
 
-CREATE TABLE `users_questions_history` (
+CREATE TABLE IF NOT EXISTS `users_questions_history` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `user_id` bigint,
   `question_id` bigint,
@@ -20,7 +20,7 @@ CREATE TABLE `users_questions_history` (
   `deleted_at` timestamp
 );
 
-CREATE TABLE `users_roles_history` (
+CREATE TABLE IF NOT EXISTS `users_roles_history` (
   `id` bigint PRIMARY KEY AUTO_INCREMENT,
   `user_id` bigint,
   `role` int,

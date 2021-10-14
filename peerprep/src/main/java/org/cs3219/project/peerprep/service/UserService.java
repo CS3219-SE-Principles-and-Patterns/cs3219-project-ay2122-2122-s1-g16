@@ -3,6 +3,7 @@ package org.cs3219.project.peerprep.service;
 import lombok.AllArgsConstructor;
 import org.cs3219.project.peerprep.model.entity.User;
 import org.cs3219.project.peerprep.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,21 +17,22 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class UserService implements UserDetailsService {
+    @Autowired
     private final UserRepository userRepository;
+    @Autowired
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private static final int LIFETIME = 30;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // TODO: check if we use username or email
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(
-                                String.format("User not found with username %s", email)
+                                String.format("User not found with email %s", email)
                         )
                 );
     }
 
-    public User createNewUser(User user) {
+    public User createNewUser(User user) throws IllegalArgumentException {
         String email = user.getEmail();
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {

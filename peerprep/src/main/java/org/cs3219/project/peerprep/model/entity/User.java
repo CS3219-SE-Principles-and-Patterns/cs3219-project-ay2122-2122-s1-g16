@@ -25,8 +25,8 @@ public class User implements UserDetails {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "username")
-    private String username;
+    @Column(name = "nickname")
+    private String nickname;
 
     @Column(name = "password")
     private String password;
@@ -53,9 +53,9 @@ public class User implements UserDetails {
     @Column(name = "token_expire_time")
     private LocalDateTime tokenExpireTime;
 
-    public User(String email, String username, String password, UserGroup userGroup) {
+    public User(String email, String nickname, String password, UserGroup userGroup) {
         this.email = email;
-        this.username = username;
+        this.nickname = nickname;
         this.password = password;
         this.userGroup = userGroup;
     }
@@ -87,4 +87,8 @@ public class User implements UserDetails {
         return enabled;
     }
 
+    @Override
+    public String getUsername() {
+        return email;
+    }
 }

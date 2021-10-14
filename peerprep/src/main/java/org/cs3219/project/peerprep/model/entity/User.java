@@ -22,26 +22,23 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "nickname")
+    @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_group")
+    @Column(name = "user_group", nullable = false)
     private UserGroup userGroup;
 
-    @Column(name = "enabled")
+    @Column(name = "enabled", nullable = false)
     private boolean enabled = false;
 
-    @Column(name = "activation_time")
-    private LocalDateTime activationTime;
-
-    @Column(name = "locked")
+    @Column(name = "locked", nullable = false)
     private boolean locked = false;
 
     @Column(name = "token")
@@ -52,6 +49,9 @@ public class User implements UserDetails {
 
     @Column(name = "token_expire_time")
     private LocalDateTime tokenExpireTime;
+
+    @Column(name = "activation_time")
+    private LocalDateTime activationTime;
 
     public User(String email, String nickname, String password, UserGroup userGroup) {
         this.email = email;

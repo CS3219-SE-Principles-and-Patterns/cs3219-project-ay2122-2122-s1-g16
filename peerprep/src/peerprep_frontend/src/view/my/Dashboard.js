@@ -49,14 +49,15 @@ export default function Dashboard() {
             backgroundSize:"cover",
             backgroundImage: "url(" + require("../../assets/img/dashboard_bg2.png").default + ")"}}>
          <div className="h-full w-full justify-center flex">
+          
           <div className="text-center mt-12">
               <h3 className="text-3xl font-semibold leading-normal mb-12 mt-4 text-blueGray-700" >
                 Welcome to Peerprep
               </h3>
             </div>
-              <div class="justify-center flex absolute bottom-0 rounded-t-lg shadow pb-64" style={{backgroundColor:"rgba(255, 255, 255, 0.8)", width:"800px"}}>
+              <div class="justify-center flex absolute bottom-0 rounded-t-lg shadow pb-56" style={{backgroundColor:"rgba(255, 255, 255, 0.8)", width:"800px"}}>
 
-                <div className="mb-2 text-blueGray-600 mt-12 mb-12 mx-16">
+                <div className="text-blueGray-600 mt-12 mb-12 mx-16">
                   Choose your desire difficulty level and find a peer by clicking below button! 
                   <p>
                   Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, 

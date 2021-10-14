@@ -17,7 +17,7 @@ export default function Sidebar() {
             <i className="fas fa-bars"></i>
           </button>
           <div
-            className="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
+            className="md:block text-xleft md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-xl uppercase font-bold p-4 px-0"
           >
             Hi Username!
           </div>
@@ -34,7 +34,7 @@ export default function Sidebar() {
               <div className="flex flex-wrap">
                 <div className="w-6/12">
                   <div
-                    className="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
+                    className="md:block text-xleft md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-xlx uppercase font-bold p-4 px-0"
                     to="/my/dashboard"
                   >
                     Hi Username!
@@ -69,7 +69,7 @@ export default function Sidebar() {
                 >
                   <i
                     className={
-                      "fas fa-chalkboard mr-2 text-sm " +
+                      "fas fa-chalkboard mr-2 text-xl align-middle " +
                       (window.location.href.indexOf("/my/dashboard") !== -1
                         ? "opacity-75"
                         : "text-blueGray-300")
@@ -87,11 +87,11 @@ export default function Sidebar() {
                       ? "text-sky-500 hover:text-sky-600"
                       : "text-blueGray-700 hover:text-blueGray-500")
                   }
-                  to="/"
+                  to="/my/profile"
                 >
                   <i
                     className={
-                      "far fa-id-card mr-2 text-sm " +
+                      "far fa-id-card mr-2 text-xl align-middle " +
                       (window.location.href.indexOf("/admin/settings") !== -1
                         ? "opacity-75"
                         : "text-blueGray-300")
@@ -113,7 +113,7 @@ export default function Sidebar() {
                 >
                   <i
                     className={
-                      "fas fa-history mr-2 text-sm " +
+                      "fas fa-history mr-2 text-xl align-middle " +
                       (window.location.href.indexOf("/admin/tables") !== -1
                         ? "opacity-75"
                         : "text-blueGray-300")
@@ -135,7 +135,7 @@ export default function Sidebar() {
                 >
                   <i
                     className={
-                      "far fa-envelope mr-2 text-sm " +
+                      "far fa-envelope mr-2 text-xl align-middle " +
                       (window.location.href.indexOf("/admin/maps") !== -1
                         ? "opacity-75"
                         : "text-blueGray-300")

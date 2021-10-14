@@ -1,4 +1,4 @@
-package org.cs3219.project.peerprep.model.dto;
+package org.cs3219.project.peerprep.model.dto.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

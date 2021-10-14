@@ -1,10 +1,12 @@
 package org.cs3219.project.peerprep.controller;
 
 import lombok.AllArgsConstructor;
-import org.cs3219.project.peerprep.model.dto.*;
+import org.cs3219.project.peerprep.common.utils.AuthenticationUtil;
+import org.cs3219.project.peerprep.model.dto.authentication.*;
 import org.cs3219.project.peerprep.model.entity.User;
 import org.cs3219.project.peerprep.model.entity.UserGroup;
 import org.cs3219.project.peerprep.service.AuthenticationService;
+import org.cs3219.project.peerprep.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ import javax.validation.constraints.NotBlank;
 public class AuthenticationController {
     @Autowired
     private final AuthenticationService authenticationService;
+    @Autowired
+    private final EmailService emailService;
 
     @PostMapping(path = "/register")
     public ResponseEntity<RegistrationResponse> register(@RequestBody @Valid RegistrationRequest request) {
@@ -35,7 +39,13 @@ public class AuthenticationController {
                 user.getActivationToken()
         );
 
-        // TODO: send email
+        // send email
+        String url = AuthenticationUtil.generateActivationUrl(user.getEmail(), user.getActivationToken());
+        String subject = AuthenticationUtil.generateActivationEmailSubject();
+        String recepientEmail = user.getEmail();
+        String senderEmail = AuthenticationUtil.generateEmailSenderAddress();
+        String emailContent = AuthenticationUtil.buildActivationEmailContent(url);
+        emailService.send(subject, recepientEmail, senderEmail, emailContent);
         return new ResponseEntity<>(resp, HttpStatus.CREATED);
     }
 
@@ -58,7 +68,14 @@ public class AuthenticationController {
     public ResponseEntity<PasswordPreResetResponse> preResetPassword(@RequestParam("email") @Email String email) {
         String token = authenticationService.generatePasswordToken(email);
         PasswordPreResetResponse resp = new PasswordPreResetResponse(email, token);
-        // TODO: send email
+
+        // send email
+        String url = AuthenticationUtil.generatePasswordResetUrl(email, token);
+        String subject = AuthenticationUtil.generatePasswordResetEmailSubject();
+        String recipientEmail = email;
+        String senderEmail = AuthenticationUtil.generateEmailSenderAddress();
+        String emailContent = AuthenticationUtil.buildPasswordResetEmailContent(url);
+        emailService.send(subject, recipientEmail, senderEmail, emailContent);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 

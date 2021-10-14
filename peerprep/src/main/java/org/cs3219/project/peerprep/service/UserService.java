@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,9 +20,6 @@ import java.util.UUID;
 public class UserService implements UserDetailsService {
     @Autowired
     private final UserRepository userRepository;
-    @Autowired
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private static final int LIFETIME = 30;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -32,31 +30,10 @@ public class UserService implements UserDetailsService {
                 );
     }
 
-    public User createNewUser(User user) throws IllegalArgumentException {
-        String email = user.getEmail();
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isPresent()) {
-            User savedUser = optionalUser.get();
-            if (savedUser.isEnabled()) {
-                throw new IllegalArgumentException(String.format("email %s is taken", email));
-            }
-
-            user.setId(savedUser.getId());
-        }
-
-        String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
-
-        String token = UUID.randomUUID().toString();
-        LocalDateTime createTime = LocalDateTime.now();
-        LocalDateTime expireTime = LocalDateTime.now().plusMinutes(LIFETIME);
-        user.setToken(token);
-        user.setTokenCreateTime(createTime);
-        user.setTokenExpireTime(expireTime);
-
-        userRepository.save(user);
-
-        return user;
+    public User getUserByEmail(String email) throws NoSuchElementException {
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new NoSuchElementException(String.format("user with email %s is not found", email))
+        );
     }
 
 }

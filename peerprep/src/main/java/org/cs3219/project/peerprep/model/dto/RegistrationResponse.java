@@ -11,4 +11,5 @@ public class RegistrationResponse {
     private int id;
     private String email;
     private String nickname;
+    private String token;
 }

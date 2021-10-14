@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/api/v1/authenticate")
 @AllArgsConstructor
@@ -22,7 +24,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping(path = "/register")
-    public ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationRequest request) {
+    public ResponseEntity<RegistrationResponse> register(@Valid @RequestBody RegistrationRequest request) {
 
         // TODO: input validation
 //        boolean isValidEmail = emailValidationService.test(request.getEmail());

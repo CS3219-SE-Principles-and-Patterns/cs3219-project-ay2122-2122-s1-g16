@@ -1,8 +1,7 @@
 package org.cs3219.project.peerprep.controller;
 
 import lombok.AllArgsConstructor;
-import org.cs3219.project.peerprep.model.dto.RegistrationRequest;
-import org.cs3219.project.peerprep.model.dto.RegistrationResponse;
+import org.cs3219.project.peerprep.model.dto.*;
 import org.cs3219.project.peerprep.model.entity.User;
 import org.cs3219.project.peerprep.model.entity.UserGroup;
 import org.cs3219.project.peerprep.service.AuthenticationService;
@@ -33,7 +32,7 @@ public class AuthenticationController {
                 user.getId(),
                 user.getEmail(),
                 user.getNickname(),
-                user.getToken()
+                user.getActivationToken()
         );
 
         // TODO: send email
@@ -50,7 +49,27 @@ public class AuthenticationController {
                 user.getId(),
                 user.getEmail(),
                 user.getNickname(),
-                user.getToken()
+                user.getActivationToken()
+        );
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/password/pre-reset")
+    public ResponseEntity<PasswordPreResetResponse> preResetPassword(@RequestParam("email") @Email String email) {
+        String token = authenticationService.generatePasswordToken(email);
+        PasswordPreResetResponse resp = new PasswordPreResetResponse(email, token);
+        // TODO: send email
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
+
+    @PostMapping(path = "/password/reset")
+    public ResponseEntity<PasswordResetResponse> resetPassord(@RequestBody @Valid PasswordResetRequest request) {
+        User user = authenticationService.resetPassword(request.getEmail(), request.getPassword(), request.getToken());
+        PasswordResetResponse resp = new PasswordResetResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getNickname()
         );
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }

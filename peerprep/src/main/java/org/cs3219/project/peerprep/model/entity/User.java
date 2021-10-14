@@ -41,17 +41,20 @@ public class User implements UserDetails {
     @Column(name = "locked", nullable = false)
     private boolean locked = false;
 
-    @Column(name = "token")
-    private String token;
+    @Column(name = "activate_token")
+    private String activationToken;
 
-    @Column(name = "token_create_time")
-    private LocalDateTime tokenCreateTime;
-
-    @Column(name = "token_expire_time")
-    private LocalDateTime tokenExpireTime;
+    @Column(name = "activate_token_expire_time")
+    private LocalDateTime activationTokenExpireTime;
 
     @Column(name = "activation_time")
     private LocalDateTime activationTime;
+
+    @Column(name = "password_token")
+    private String passwordToken;
+
+    @Column(name = "password_token_expire_time")
+    private LocalDateTime passwordTokenExpireTime;
 
     public User(String email, String nickname, String password, UserGroup userGroup) {
         this.email = email;

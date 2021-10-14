@@ -10,11 +10,11 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @Getter
 @Setter
-public class RegistrationRequest {
+public class PasswordResetRequest {
     @Email(message = "email must be a valid email address")
     private String email;
-    @NotBlank(message = "nickname cannot be blank")
-    private String nickname;
     @NotBlank(message = "password cannot be blank")
     private String password;
+    @NotBlank(message = "password token cannot be blank")
+    private String token;
 }

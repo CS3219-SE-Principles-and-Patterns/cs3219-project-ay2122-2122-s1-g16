@@ -1,7 +1,6 @@
 package org.cs3219.project.peerprep.service;
 
 import lombok.AllArgsConstructor;
-import org.apache.tomcat.jni.Local;
 import org.cs3219.project.peerprep.model.entity.User;
 import org.cs3219.project.peerprep.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +38,9 @@ public class AuthenticationService {
         user.setPassword(encodedPassword);
 
         String token = UUID.randomUUID().toString();
-        LocalDateTime createTime = LocalDateTime.now();
         LocalDateTime expireTime = LocalDateTime.now().plusMinutes(LIFETIME);
-        user.setToken(token);
-        user.setTokenCreateTime(createTime);
-        user.setTokenExpireTime(expireTime);
+        user.setActivationToken(token);
+        user.setActivationTokenExpireTime(expireTime);
 
         userRepository.save(user);
 
@@ -56,11 +53,11 @@ public class AuthenticationService {
             throw new IllegalArgumentException("account is already activated");
         }
 
-        if (!token.equals(user.getToken())) {
+        if (!token.equals(user.getActivationToken())) {
             throw new IllegalArgumentException("incorrect token received");
         }
 
-        LocalDateTime expireTime = user.getTokenExpireTime();
+        LocalDateTime expireTime = user.getActivationTokenExpireTime();
         if (expireTime.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("token expired");
         }
@@ -71,6 +68,34 @@ public class AuthenticationService {
 
         userRepository.updateActivationStatus(email, now);
 
+        return user;
+    }
+
+    public String generatePasswordToken(String email) {
+        if (!userRepository.existsUserByEmail(email)) {
+            throw new IllegalArgumentException(String.format("user with email %s is not found", email));
+        }
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expireTime = LocalDateTime.now().plusMinutes(LIFETIME);
+        userRepository.updatePasswordToken(email, token, expireTime);
+
+        return token;
+    }
+
+    public User resetPassword(String email, String password, String token) {
+        User user = userService.getUserByEmail(email);
+
+        if (!token.equals(user.getPasswordToken())) {
+            throw new IllegalArgumentException("incorrect token received");
+        }
+
+        LocalDateTime expireTime = user.getPasswordTokenExpireTime();
+        if (expireTime.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("token expired");
+        }
+
+        String encodedPassword = bCryptPasswordEncoder.encode(password);
+        userRepository.updatePassword(email, encodedPassword);
         return user;
     }
 }

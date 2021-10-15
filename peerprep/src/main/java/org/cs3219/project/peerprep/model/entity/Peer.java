@@ -1,4 +1,4 @@
-package org.cs3219.project.peerprep.component;
+package org.cs3219.project.peerprep.model.entity;
 
 public class Peer {
 

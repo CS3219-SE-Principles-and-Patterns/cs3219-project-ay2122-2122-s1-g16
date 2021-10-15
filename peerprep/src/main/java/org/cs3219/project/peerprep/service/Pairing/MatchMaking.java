@@ -1,4 +1,6 @@
-package org.cs3219.project.peerprep.component;
+package org.cs3219.project.peerprep.service.Pairing;
+
+import org.cs3219.project.peerprep.model.entity.Peer;
 
 import java.util.ArrayList;
 import java.util.concurrent.BlockingDeque;

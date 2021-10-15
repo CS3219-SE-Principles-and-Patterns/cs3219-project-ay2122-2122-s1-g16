@@ -5,10 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class InterviewRequest {
+public class InterviewDetailsRequest {
     private Long userId;
 
     private Integer difficulty;
-
-    private Integer role;
 }

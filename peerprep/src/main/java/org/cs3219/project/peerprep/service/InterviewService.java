@@ -1,8 +1,8 @@
 package org.cs3219.project.peerprep.service;
 
-import org.cs3219.project.peerprep.model.dto.InterviewRequest;
-import org.cs3219.project.peerprep.model.dto.InterviewResponse;
+import org.cs3219.project.peerprep.model.dto.InterviewDetailsRequest;
+import org.cs3219.project.peerprep.model.dto.InterviewDetailsResponse;
 
 public interface InterviewService {
-    InterviewResponse getInterviewInfo(InterviewRequest interviewRequest);
+    InterviewDetailsResponse getInterviewDetails(InterviewDetailsRequest interviewRequest);
 }

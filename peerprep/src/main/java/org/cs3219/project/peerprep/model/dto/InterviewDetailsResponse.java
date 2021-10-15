@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class InterviewResponse {
+public class InterviewDetailsResponse {
     private Long questionId;
 
     private String title;
@@ -15,6 +15,4 @@ public class InterviewResponse {
     private Integer difficulty;
 
     private String solution;
-
-    private Integer role;
 }

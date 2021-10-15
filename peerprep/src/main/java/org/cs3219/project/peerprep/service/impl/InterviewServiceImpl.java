@@ -2,8 +2,9 @@ package org.cs3219.project.peerprep.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.random.RandomDataGenerator;
-import org.cs3219.project.peerprep.model.dto.InterviewRequest;
-import org.cs3219.project.peerprep.model.dto.InterviewResponse;
+import org.cs3219.project.peerprep.common.utils.StringUtils;
+import org.cs3219.project.peerprep.model.dto.InterviewDetailsRequest;
+import org.cs3219.project.peerprep.model.dto.InterviewDetailsResponse;
 import org.cs3219.project.peerprep.model.entity.InterviewQuestion;
 import org.cs3219.project.peerprep.model.entity.InterviewSolution;
 import org.cs3219.project.peerprep.model.entity.UserQuestionHistory;
@@ -24,11 +25,11 @@ public class InterviewServiceImpl implements InterviewService {
     private InterviewRepository interviewRepository;
 
     @Override
-    public InterviewResponse getInterviewInfo(InterviewRequest interviewRequest) {
-        log.info("InterviewService.getInterviewInfo.query:{}", interviewRequest);
+    public InterviewDetailsResponse getInterviewDetails(InterviewDetailsRequest interviewDetailsRequest) {
+        log.info("InterviewService.getInterviewInfo.query:{}", interviewDetailsRequest);
         // Retrieve user's unattempted questions
-        List<InterviewQuestion> interviewQuestions = interviewRepository.fetchQuestionsByDifficulty(interviewRequest.getDifficulty());
-        List<UserQuestionHistory> userQuestionHistories = interviewRepository.fetchAttemptedQuestionsByUserId(interviewRequest.getUserId());
+        List<InterviewQuestion> interviewQuestions = interviewRepository.fetchQuestionsByDifficulty(interviewDetailsRequest.getDifficulty());
+        List<UserQuestionHistory> userQuestionHistories = interviewRepository.fetchAttemptedQuestionsByUserId(interviewDetailsRequest.getUserId());
         List<Long> attemptedQuestionIds = userQuestionHistories.stream().map(UserQuestionHistory::getQuestionId).collect(Collectors.toList());
         List<InterviewQuestion> unattemptedQuestions = interviewQuestions.stream()
                 .filter(interviewQuestion -> !attemptedQuestionIds.contains(interviewQuestion.getId()))
@@ -46,20 +47,20 @@ public class InterviewServiceImpl implements InterviewService {
             interviewQuestion = unattemptedQuestions.get(randomNumber);
         }
 
-        InterviewResponse interviewResponse = InterviewResponse.builder()
+        String formatQuestionBody = StringUtils.convertSpecialCharFromJavaToHtml(interviewQuestion.getContent());
+        InterviewDetailsResponse interviewResponse = InterviewDetailsResponse.builder()
                 .questionId(interviewQuestion.getId())
                 .title(interviewQuestion.getTitle())
-                .question(interviewQuestion.getContent())
+                .question(formatQuestionBody)
                 .difficulty(interviewQuestion.getDifficulty())
-                .role(interviewRequest.getRole())
                 .build();
+
         // TODO: 14/10/21 Insert solutions into the DB
         // Retrieve and return solution if the user is interviewer
-        if (interviewRequest.getRole().equals(1)) {
-            Optional<InterviewSolution> interviewSolution = Optional.ofNullable(interviewRepository.fetchSolutionByQuestionId(interviewQuestion.getId()));
-            interviewSolution.ifPresentOrElse(solution -> interviewResponse.setSolution(solution.getContent()),
-                    () -> interviewResponse.setSolution("Unavailable"));
-        }
+        Optional<InterviewSolution> interviewSolution = Optional.ofNullable(interviewRepository.fetchSolutionByQuestionId(interviewQuestion.getId()));
+        interviewSolution.ifPresentOrElse(solution -> interviewResponse.setSolution(solution.getContent()),
+                () -> interviewResponse.setSolution("Unavailable"));
+
         return interviewResponse;
     }
 }

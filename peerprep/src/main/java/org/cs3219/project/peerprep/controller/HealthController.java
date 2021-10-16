@@ -6,7 +6,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController(value = "/")
 public class HealthController {
     @GetMapping
-    public String healthCheck() {
+    public String helloWorldAtRoot() {
+        return "Hello World at Root!";
+    }
+
+    @GetMapping(path = "hello")
+    public String helloWorld() {
         return "Hello World!";
     }
 }

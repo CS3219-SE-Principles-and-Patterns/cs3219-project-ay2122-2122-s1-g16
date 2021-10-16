@@ -34,4 +34,4 @@ spring:
 
 custom:
   auth:
-    enable: true
+    enable: false

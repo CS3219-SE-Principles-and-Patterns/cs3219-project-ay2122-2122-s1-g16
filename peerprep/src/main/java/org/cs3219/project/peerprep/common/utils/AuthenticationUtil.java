@@ -3,7 +3,7 @@ package org.cs3219.project.peerprep.common.utils;
 
 public class AuthenticationUtil {
     private static String ACTIVATION_ENDPOINT = "http://localhost:8080/api/v1/account/activate";
-    private static String PASSWORD_RESET_REDIRECT_ENDPOINT = "http://xxx"; // frontend url
+    private static String PASSWORD_RESET_REDIRECT_ENDPOINT = "http://xxx"; // TODO: frontend url
 
     public static String generateActivationUrl(String email, String token) {
         return String.format(ACTIVATION_ENDPOINT + "?email=%s&token=%s", email, token);

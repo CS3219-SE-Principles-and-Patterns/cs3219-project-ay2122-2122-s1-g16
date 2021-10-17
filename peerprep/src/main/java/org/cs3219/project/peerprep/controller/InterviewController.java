@@ -20,7 +20,7 @@ public class InterviewController {
     private InterviewService interviewService;
 
     @GetMapping("/question")
-    public CommonResponse<InterviewDetailsResponse> getInterviewResponse(@RequestParam Long userId, @RequestParam Integer difficulty) {
+    public CommonResponse<InterviewDetailsResponse> getInterviewDetails(@RequestParam Long userId, @RequestParam Integer difficulty) {
         InterviewDetailsRequest interviewRequest = InterviewDetailsRequest.builder()
                 .userId(userId)
                 .difficulty(difficulty)

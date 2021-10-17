@@ -17,4 +17,5 @@ jobs:
           distribution: 'adopt'
           cache: maven
       - name: Build with Maven
+        working-directory: ./peerprep
         run: mvn -B clean package --file pom.xml

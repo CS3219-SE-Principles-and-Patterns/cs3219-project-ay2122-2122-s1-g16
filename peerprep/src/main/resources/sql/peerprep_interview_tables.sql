@@ -16,16 +16,8 @@ CREATE TABLE IF NOT EXISTS `users_questions_history` (
   `user_id` int unsigned,
   `question_id` int unsigned,
   `user_answer` text,
-  `created_at` timestamp,
-  `deleted_at` timestamp
-);
-
-CREATE TABLE IF NOT EXISTS `users_roles_history` (
-  `id` int unsigned PRIMARY KEY AUTO_INCREMENT,
-  `user_id` int unsigned,
-  `role` int,
-  `created_at` timestamp,
-  `deleted_at` timestamp
+  `created_at` int unsigned,
+  `deleted_at` int unsigned
 );
 
 ALTER TABLE `interview_solutions` ADD FOREIGN KEY (`question_id`) REFERENCES `interview_questions` (`id`);

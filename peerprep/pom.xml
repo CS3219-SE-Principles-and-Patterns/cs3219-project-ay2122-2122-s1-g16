@@ -12,7 +12,7 @@
 	<artifactId>peerprep</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>peerprep</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Peerprep project for NUS CS3219</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -46,6 +46,22 @@
 			<groupId>com.baomidou</groupId>
 			<artifactId>mybatis-plus-boot-starter</artifactId>
 			<version>3.4.3.3</version>
+		</dependency>
+
+		<!-- Apache Commons -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.6.1</version>
 		</dependency>
 
 		<!--Spring JPA-->

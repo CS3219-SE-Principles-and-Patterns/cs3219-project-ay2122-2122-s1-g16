@@ -35,3 +35,6 @@ spring:
 custom:
   auth:
     enable: false
+
+interview:
+  dayDuration: 10

@@ -72,19 +72,22 @@ public class AuthenticationController {
         String token = authenticationService.generatePasswordToken(email);
         PasswordPreResetResponse resp = new PasswordPreResetResponse(email, token);
 
+        // TODO: uncomment once we figure out how to send email in prod env
         // send email
+        /*
         String url = AuthenticationUtil.generatePasswordResetUrl(email, token);
         String subject = AuthenticationUtil.generatePasswordResetEmailSubject();
         String recipientEmail = email;
         String senderEmail = AuthenticationUtil.generateEmailSenderAddress();
         String emailContent = AuthenticationUtil.buildPasswordResetEmailContent(url);
         emailService.send(subject, recipientEmail, senderEmail, emailContent);
+         */
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
 
     @PostMapping(path = "/password/reset")
-    public ResponseEntity<PasswordResetResponse> resetPassord(@RequestBody @Valid PasswordResetRequest request) {
+    public ResponseEntity<PasswordResetResponse> resetPassword(@RequestBody @Valid PasswordResetRequest request) {
         User user = authenticationService.resetPassword(request.getEmail(), request.getPassword(), request.getToken());
         PasswordResetResponse resp = new PasswordResetResponse(
                 user.getId(),

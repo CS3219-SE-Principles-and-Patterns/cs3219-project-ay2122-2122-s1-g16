@@ -40,12 +40,15 @@ public class AuthenticationController {
         );
 
         // send email
+        // TODO: uncomment once we figure out how to send email in prod env
+        /*
         String url = AuthenticationUtil.generateActivationUrl(user.getEmail(), user.getActivationToken());
         String subject = AuthenticationUtil.generateActivationEmailSubject();
         String recepientEmail = user.getEmail();
         String senderEmail = AuthenticationUtil.generateEmailSenderAddress();
         String emailContent = AuthenticationUtil.buildActivationEmailContent(url);
         emailService.send(subject, recepientEmail, senderEmail, emailContent);
+         */
         return new ResponseEntity<>(resp, HttpStatus.CREATED);
     }
 

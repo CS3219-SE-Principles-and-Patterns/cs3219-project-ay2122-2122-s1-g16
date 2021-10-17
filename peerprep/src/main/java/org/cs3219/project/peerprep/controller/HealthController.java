@@ -10,7 +10,7 @@ public class HealthController {
         return "Hello World at Root!";
     }
 
-    @GetMapping(path = "hello")
+    @GetMapping(path = "api/v1/hello")
     public String helloWorld() {
         return "Hello World!";
     }

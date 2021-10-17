@@ -1,4 +1,4 @@
-package org.cs3219.project.peerprep.common.api;
+package org.cs3219.project.peerprep.exception.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

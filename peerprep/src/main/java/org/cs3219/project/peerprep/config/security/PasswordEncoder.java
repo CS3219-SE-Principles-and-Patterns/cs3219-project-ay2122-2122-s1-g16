@@ -1,4 +1,4 @@
-package org.cs3219.project.peerprep.config;
+package org.cs3219.project.peerprep.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

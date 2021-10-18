@@ -34,6 +34,11 @@ public class InterviewRepositoryImpl implements InterviewRepository {
     private int dayDuration;
 
     @Override
+    public InterviewQuestion fetchQuestionById(Long id) {
+        return interviewQuestionMapper.selectById(id);
+    }
+
+    @Override
     public List<InterviewQuestion> fetchQuestionsByDifficulty(Integer difficulty) {
         QueryWrapper<InterviewQuestion> wrapper = new QueryWrapper<>();
         wrapper.eq("difficulty", difficulty);
@@ -41,12 +46,15 @@ public class InterviewRepositoryImpl implements InterviewRepository {
     }
 
     @Override
-    public List<UserQuestionHistory> fetchAttemptedQuestionsByUserId(Long userId) {
+    public List<UserQuestionHistory> fetchAttemptedQuestionsByUserId(Long userId, boolean isInterview) {
         QueryWrapper<UserQuestionHistory> wrapper = new QueryWrapper<>();
-        // Get user's attempted questions within dayDuration before current time
-        Timestamp startTime = new Timestamp(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(dayDuration));
+        // Check the purpose if for interview or user's question history
+        if (isInterview) {
+            // Get user's attempted questions within dayDuration before current time
+            Timestamp startTime = new Timestamp(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(dayDuration));
+            wrapper.ge("created_at", startTime);
+        }
         wrapper.eq("user_id", userId);
-        wrapper.ge("created_at", startTime);
         return userQuestionHistoryMapper.selectList(wrapper);
     }
 

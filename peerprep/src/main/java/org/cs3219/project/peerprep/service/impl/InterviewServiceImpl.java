@@ -3,10 +3,7 @@ package org.cs3219.project.peerprep.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.cs3219.project.peerprep.common.utils.StringUtils;
-import org.cs3219.project.peerprep.model.dto.interview.InterviewDetailsRequest;
-import org.cs3219.project.peerprep.model.dto.interview.InterviewDetailsResponse;
-import org.cs3219.project.peerprep.model.dto.interview.SaveAnswerRequest;
-import org.cs3219.project.peerprep.model.dto.interview.SaveAnswerResponse;
+import org.cs3219.project.peerprep.model.dto.interview.*;
 import org.cs3219.project.peerprep.model.entity.InterviewQuestion;
 import org.cs3219.project.peerprep.model.entity.InterviewSolution;
 import org.cs3219.project.peerprep.model.entity.UserQuestionHistory;
@@ -15,6 +12,7 @@ import org.cs3219.project.peerprep.service.InterviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,10 +26,10 @@ public class InterviewServiceImpl implements InterviewService {
 
     @Override
     public InterviewDetailsResponse getInterviewDetails(InterviewDetailsRequest interviewDetailsRequest) {
-        log.info("InterviewService.getInterviewInfo.query:{}", interviewDetailsRequest);
+        log.info("InterviewService.getInterviewDetails.request:{}", interviewDetailsRequest);
         // Retrieve user's unattempted questions
         List<InterviewQuestion> interviewQuestions = interviewRepository.fetchQuestionsByDifficulty(interviewDetailsRequest.getDifficulty());
-        List<UserQuestionHistory> userQuestionHistories = interviewRepository.fetchAttemptedQuestionsByUserId(interviewDetailsRequest.getUserId());
+        List<UserQuestionHistory> userQuestionHistories = interviewRepository.fetchAttemptedQuestionsByUserId(interviewDetailsRequest.getUserId(), true);
         List<Long> attemptedQuestionIds = userQuestionHistories.stream().map(UserQuestionHistory::getQuestionId).collect(Collectors.toList());
         List<InterviewQuestion> unattemptedQuestions = interviewQuestions.stream()
                 .filter(interviewQuestion -> !attemptedQuestionIds.contains(interviewQuestion.getId()))
@@ -68,6 +66,7 @@ public class InterviewServiceImpl implements InterviewService {
 
     @Override
     public SaveAnswerResponse saveUserAnswer(SaveAnswerRequest saveAnswerRequest) {
+        log.info("InterviewService.saveUserAnswer.request:{}", saveAnswerRequest);
         UserQuestionHistory userQuestionHistory = UserQuestionHistory.builder()
                 .userId(saveAnswerRequest.getUserId())
                 .questionId(saveAnswerRequest.getQuestionId())
@@ -79,5 +78,22 @@ public class InterviewServiceImpl implements InterviewService {
                 .questionId(result.getQuestionId())
                 .answer(result.getUserAnswer())
                 .build();
+    }
+
+    @Override
+    public List<UserAttemptedQuestion> getUserAttemptedQuestions(Long userId) {
+//        log.info("InterviewService.getUserAttemptedQuestions.userId:{}", userId);
+//        List<UserAttemptedQuestion> userAttemptedQuestions = new ArrayList<>();
+//        List<UserQuestionHistory> userQuestionHistories = interviewRepository.fetchAttemptedQuestionsByUserId(userId, false);
+//        for (UserQuestionHistory userQuestionHistory : userQuestionHistories) {
+//            InterviewQuestion currentQuestion = interviewRepository.fetchQuestionById(userQuestionHistory.getQuestionId());
+//            UserAttemptedQuestion userAttemptedQuestion = UserAttemptedQuestion.builder()
+//                    .questionId(userQuestionHistory.getQuestionId())
+//                    .title(currentQuestion.getTitle())
+//                    .difficulty(currentQuestion.getDifficulty())
+//                    .attemptedAt(userQuestionHistory.getCreatedAt())
+//                    .build();
+//        }
+        return null;
     }
 }

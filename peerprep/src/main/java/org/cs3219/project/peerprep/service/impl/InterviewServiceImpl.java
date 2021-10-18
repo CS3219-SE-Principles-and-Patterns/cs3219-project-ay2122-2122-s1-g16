@@ -7,12 +7,12 @@ import org.cs3219.project.peerprep.model.dto.interview.*;
 import org.cs3219.project.peerprep.model.entity.InterviewQuestion;
 import org.cs3219.project.peerprep.model.entity.InterviewSolution;
 import org.cs3219.project.peerprep.model.entity.UserQuestionHistory;
-import org.cs3219.project.peerprep.repository.InterviewRepository;
+import org.cs3219.project.peerprep.repository.HistoryRepository;
+import org.cs3219.project.peerprep.repository.QuestionRepository;
 import org.cs3219.project.peerprep.service.InterviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,14 +22,17 @@ import java.util.stream.Collectors;
 public class InterviewServiceImpl implements InterviewService {
 
     @Autowired
-    private InterviewRepository interviewRepository;
+    private HistoryRepository historyRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @Override
     public InterviewDetailsResponse getInterviewDetails(InterviewDetailsRequest interviewDetailsRequest) {
         log.info("InterviewService.getInterviewDetails.request:{}", interviewDetailsRequest);
         // Retrieve user's unattempted questions
-        List<InterviewQuestion> interviewQuestions = interviewRepository.fetchQuestionsByDifficulty(interviewDetailsRequest.getDifficulty());
-        List<UserQuestionHistory> userQuestionHistories = interviewRepository.fetchAttemptedQuestionsByUserId(interviewDetailsRequest.getUserId(), true);
+        List<InterviewQuestion> interviewQuestions = questionRepository.fetchQuestionsByDifficulty(interviewDetailsRequest.getDifficulty());
+        List<UserQuestionHistory> userQuestionHistories = historyRepository.fetchAttemptedQuestionsByUserId(interviewDetailsRequest.getUserId());
         List<Long> attemptedQuestionIds = userQuestionHistories.stream().map(UserQuestionHistory::getQuestionId).collect(Collectors.toList());
         List<InterviewQuestion> unattemptedQuestions = interviewQuestions.stream()
                 .filter(interviewQuestion -> !attemptedQuestionIds.contains(interviewQuestion.getId()))
@@ -57,7 +60,7 @@ public class InterviewServiceImpl implements InterviewService {
 
         // TODO: 14/10/21 Insert solutions into the DB
         // Retrieve and return solution if the user is interviewer
-        Optional<InterviewSolution> interviewSolution = Optional.ofNullable(interviewRepository.fetchSolutionByQuestionId(interviewQuestion.getId()));
+        Optional<InterviewSolution> interviewSolution = Optional.ofNullable(questionRepository.fetchSolutionByQuestionId(interviewQuestion.getId()));
         interviewSolution.ifPresentOrElse(solution -> interviewResponse.setSolution(solution.getContent()),
                 () -> interviewResponse.setSolution("Unavailable"));
 
@@ -72,28 +75,11 @@ public class InterviewServiceImpl implements InterviewService {
                 .questionId(saveAnswerRequest.getQuestionId())
                 .userAnswer(saveAnswerRequest.getAnswer())
                 .build();
-        UserQuestionHistory result = interviewRepository.saveUserAnswer(userQuestionHistory);
+        UserQuestionHistory result = historyRepository.saveUserAnswer(userQuestionHistory);
         return SaveAnswerResponse.builder()
                 .userId(result.getUserId())
                 .questionId(result.getQuestionId())
                 .answer(result.getUserAnswer())
                 .build();
-    }
-
-    @Override
-    public List<UserAttemptedQuestion> getUserAttemptedQuestions(Long userId) {
-//        log.info("InterviewService.getUserAttemptedQuestions.userId:{}", userId);
-//        List<UserAttemptedQuestion> userAttemptedQuestions = new ArrayList<>();
-//        List<UserQuestionHistory> userQuestionHistories = interviewRepository.fetchAttemptedQuestionsByUserId(userId, false);
-//        for (UserQuestionHistory userQuestionHistory : userQuestionHistories) {
-//            InterviewQuestion currentQuestion = interviewRepository.fetchQuestionById(userQuestionHistory.getQuestionId());
-//            UserAttemptedQuestion userAttemptedQuestion = UserAttemptedQuestion.builder()
-//                    .questionId(userQuestionHistory.getQuestionId())
-//                    .title(currentQuestion.getTitle())
-//                    .difficulty(currentQuestion.getDifficulty())
-//                    .attemptedAt(userQuestionHistory.getCreatedAt())
-//                    .build();
-//        }
-        return null;
     }
 }

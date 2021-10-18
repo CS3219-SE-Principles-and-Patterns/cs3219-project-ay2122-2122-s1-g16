@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 @Data
 @Builder
 public class UserAttemptedQuestion {
+    private Long historyId;
+
     private Long questionId;
 
     private String title;

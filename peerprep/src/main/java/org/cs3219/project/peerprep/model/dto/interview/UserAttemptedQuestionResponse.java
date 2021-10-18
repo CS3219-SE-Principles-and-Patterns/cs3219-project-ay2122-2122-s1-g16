@@ -2,13 +2,12 @@ package org.cs3219.project.peerprep.model.dto.interview;
 
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.List;
+import org.cs3219.project.peerprep.common.api.CommonPage;
 
 @Data
 @Builder
 public class UserAttemptedQuestionResponse {
     private Long userId;
 
-    private List<UserAttemptedQuestion> questions;
+    private CommonPage<UserAttemptedQuestion> questions;
 }

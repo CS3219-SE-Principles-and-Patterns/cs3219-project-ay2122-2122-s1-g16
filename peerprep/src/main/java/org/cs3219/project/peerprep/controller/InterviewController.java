@@ -2,14 +2,13 @@ package org.cs3219.project.peerprep.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cs3219.project.peerprep.common.api.CommonResponse;
-import org.cs3219.project.peerprep.model.dto.InterviewDetailsRequest;
-import org.cs3219.project.peerprep.model.dto.InterviewDetailsResponse;
+import org.cs3219.project.peerprep.model.dto.interview.InterviewDetailsRequest;
+import org.cs3219.project.peerprep.model.dto.interview.InterviewDetailsResponse;
+import org.cs3219.project.peerprep.model.dto.interview.SaveAnswerRequest;
+import org.cs3219.project.peerprep.model.dto.interview.SaveAnswerResponse;
 import org.cs3219.project.peerprep.service.InterviewService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/interview")
@@ -27,5 +26,11 @@ public class InterviewController {
                 .build();
         InterviewDetailsResponse interviewResponse = interviewService.getInterviewDetails(interviewRequest);
         return CommonResponse.success(interviewResponse);
+    }
+
+    @PostMapping("/answer")
+    public CommonResponse<SaveAnswerResponse> saveUserAnswer(@RequestBody SaveAnswerRequest saveAnswerRequest) {
+        SaveAnswerResponse saveAnswerResponse = interviewService.saveUserAnswer(saveAnswerRequest);
+        return CommonResponse.create(saveAnswerResponse);
     }
 }

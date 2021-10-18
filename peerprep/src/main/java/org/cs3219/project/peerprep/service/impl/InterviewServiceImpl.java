@@ -3,8 +3,10 @@ package org.cs3219.project.peerprep.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.cs3219.project.peerprep.common.utils.StringUtils;
-import org.cs3219.project.peerprep.model.dto.InterviewDetailsRequest;
-import org.cs3219.project.peerprep.model.dto.InterviewDetailsResponse;
+import org.cs3219.project.peerprep.model.dto.interview.InterviewDetailsRequest;
+import org.cs3219.project.peerprep.model.dto.interview.InterviewDetailsResponse;
+import org.cs3219.project.peerprep.model.dto.interview.SaveAnswerRequest;
+import org.cs3219.project.peerprep.model.dto.interview.SaveAnswerResponse;
 import org.cs3219.project.peerprep.model.entity.InterviewQuestion;
 import org.cs3219.project.peerprep.model.entity.InterviewSolution;
 import org.cs3219.project.peerprep.model.entity.UserQuestionHistory;
@@ -62,5 +64,20 @@ public class InterviewServiceImpl implements InterviewService {
                 () -> interviewResponse.setSolution("Unavailable"));
 
         return interviewResponse;
+    }
+
+    @Override
+    public SaveAnswerResponse saveUserAnswer(SaveAnswerRequest saveAnswerRequest) {
+        UserQuestionHistory userQuestionHistory = UserQuestionHistory.builder()
+                .userId(saveAnswerRequest.getUserId())
+                .questionId(saveAnswerRequest.getQuestionId())
+                .userAnswer(saveAnswerRequest.getAnswer())
+                .build();
+        UserQuestionHistory result = interviewRepository.saveUserAnswer(userQuestionHistory);
+        return SaveAnswerResponse.builder()
+                .userId(result.getUserId())
+                .questionId(result.getQuestionId())
+                .answer(result.getUserAnswer())
+                .build();
     }
 }

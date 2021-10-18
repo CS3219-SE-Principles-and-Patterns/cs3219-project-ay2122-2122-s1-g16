@@ -10,4 +10,5 @@ public interface InterviewRepository {
     List<InterviewQuestion> fetchQuestionsByDifficulty(Integer difficulty);
     List<UserQuestionHistory> fetchAttemptedQuestionsByUserId(Long userId);
     InterviewSolution fetchSolutionByQuestionId(Long questionId);
+    UserQuestionHistory saveUserAnswer(UserQuestionHistory userQuestionHistory);
 }

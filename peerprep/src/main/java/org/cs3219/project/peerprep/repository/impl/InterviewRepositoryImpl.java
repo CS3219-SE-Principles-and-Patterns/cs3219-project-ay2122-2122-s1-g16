@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -43,7 +44,7 @@ public class InterviewRepositoryImpl implements InterviewRepository {
     public List<UserQuestionHistory> fetchAttemptedQuestionsByUserId(Long userId) {
         QueryWrapper<UserQuestionHistory> wrapper = new QueryWrapper<>();
         // Get user's attempted questions within dayDuration before current time
-        Long startTime = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(dayDuration);
+        Timestamp startTime = new Timestamp(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(dayDuration));
         wrapper.eq("user_id", userId);
         wrapper.ge("created_at", startTime);
         return userQuestionHistoryMapper.selectList(wrapper);
@@ -54,5 +55,11 @@ public class InterviewRepositoryImpl implements InterviewRepository {
         QueryWrapper<InterviewSolution> wrapper = new QueryWrapper<>();
         wrapper.eq("question_id", questionId);
         return interviewSolutionMapper.selectOne(wrapper);
+    }
+
+    @Override
+    public UserQuestionHistory saveUserAnswer(UserQuestionHistory userQuestionHistory) {
+        userQuestionHistoryMapper.insert(userQuestionHistory);
+        return userQuestionHistory;
     }
 }

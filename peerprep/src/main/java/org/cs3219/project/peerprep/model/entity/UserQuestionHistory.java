@@ -1,17 +1,19 @@
 package org.cs3219.project.peerprep.model.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Data
+@Builder
 @TableName("users_questions_history")
 public class UserQuestionHistory implements Serializable {
     public static final long serialVersionUID = 1L;
 
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     private Long userId;
@@ -20,8 +22,8 @@ public class UserQuestionHistory implements Serializable {
 
     private String userAnswer;
 
-    @TableField(fill = FieldFill.INSERT)
-    private Long createdAt;
+//    @TableField(fill = FieldFill.INSERT)
+    private Timestamp createdAt;
 
-    private Long deletedAt;
+    private Timestamp deletedAt;
 }

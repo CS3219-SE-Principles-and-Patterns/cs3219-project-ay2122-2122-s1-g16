@@ -1,0 +1,2 @@
+api package
+放ResultCode, CommonPage, CommonResult这些和api交互相关的

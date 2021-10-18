@@ -1,0 +1,2 @@
+entity package
+实体类，和数据库的字段一一对应，DO

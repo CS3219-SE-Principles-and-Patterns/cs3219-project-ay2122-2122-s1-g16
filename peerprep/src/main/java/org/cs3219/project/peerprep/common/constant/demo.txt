@@ -1,0 +1,2 @@
+constant package
+放各种constants

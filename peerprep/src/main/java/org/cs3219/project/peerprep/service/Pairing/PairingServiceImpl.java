@@ -11,8 +11,8 @@ public class PairingServiceImpl implements PairingService {
 
     @Async
     @Override
-    public PairingResponse getPairingResult(PairingRequest pairingRequest) throws InterruptedException {
-        Peer user = new Peer(pairingRequest.getUserId(), pairingRequest.getDifficulty());
+    public PairingResponse getPairingResult(final PairingRequest pairingRequest) throws InterruptedException {
+        final Peer user = new Peer(pairingRequest.getUserId(), pairingRequest.getDifficulty());
         MatchMaking.addPeer(user);
 
         while (true) {
@@ -25,5 +25,11 @@ public class PairingServiceImpl implements PairingService {
             }
             Thread.sleep(1000);
         }
+    }
+
+    @Override
+    public void getExitPairingResult(final PairingRequest pairingRequest) {
+        final Peer user = new Peer(pairingRequest.getUserId(), pairingRequest.getDifficulty());
+        MatchMaking.addInactivePeer(user);
     }
 }

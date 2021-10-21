@@ -40,15 +40,27 @@ public class PairingController {
         } else {
             throw new InvalidDifficultyLevelException(String.valueOf(difficultyLevel));
         }
-        PairingRequest pairingRequest = PairingRequest.builder()
+        final PairingRequest pairingRequest = PairingRequest.builder()
                 .userId(userId)
                 .difficulty(difficulty)
                 .build();
         try {
-            PairingResponse pairingResponse = pairingService.getPairingResult(pairingRequest);
+            final PairingResponse pairingResponse = pairingService.getPairingResult(pairingRequest);
             return new ResponseEntity<>(pairingResponse, HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/dequeue")
+    public ResponseEntity<Object> getExitPairingResponse(@RequestParam(name=idProperty) Long userId,
+                                                     @RequestParam (name=difficultyProperty) int difficultyLevel) {
+        final int difficulty;
+        if (difficultyLevel >= 0 && difficultyLevel < level) {
+            difficulty = difficultyLevel;
+        } else {
+            throw new InvalidDifficultyLevelException(String.valueOf(difficultyLevel));
+        }
+        return ResponseEntity.ok().build();
     }
 }

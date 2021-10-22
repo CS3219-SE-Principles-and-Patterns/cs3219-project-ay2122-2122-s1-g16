@@ -1,10 +1,12 @@
 steps:
   # maven install
   - name: maven:3.8.3-openjdk-11-slim
+    dir: ./peerprep
     entrypoint: 'mvn'
     args: ['clean', 'install', '-DskipTests']
   # build docker image
   - name: 'gcr.io/cloud-builders/docker'
+    dir: ./peerprep
     args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/peerprep_backend', '.' ]
   # push docker image
   - name: 'gcr.io/cloud-builders/docker'

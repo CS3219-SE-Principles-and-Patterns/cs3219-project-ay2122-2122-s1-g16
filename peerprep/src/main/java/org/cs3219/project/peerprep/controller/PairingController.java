@@ -1,6 +1,7 @@
 package org.cs3219.project.peerprep.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cs3219.project.peerprep.common.api.CommonResponse;
 import org.cs3219.project.peerprep.exception.InvalidDifficultyLevelException;
 import org.cs3219.project.peerprep.model.dto.PairingRequest;
 import org.cs3219.project.peerprep.model.dto.PairingResponse;
@@ -31,6 +32,10 @@ public class PairingController {
 
     private final int level = 3;
 
+    private final String successMsg = "success";
+
+    private final String errorMsg = "failure";
+
     @GetMapping("/queue")
     public ResponseEntity<Object> getPairingResponse(@RequestParam(name=idProperty) Long userId,
                                                      @RequestParam (name=difficultyProperty) int difficultyLevel) {
@@ -46,9 +51,11 @@ public class PairingController {
                 .build();
         try {
             final PairingResponse pairingResponse = pairingService.getPairingResult(pairingRequest);
-            return new ResponseEntity<>(pairingResponse, HttpStatus.OK);
-        } catch (Exception ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+            final CommonResponse<PairingResponse> response = CommonResponse.success(successMsg, pairingResponse);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InterruptedException ex) {
+            final CommonResponse<PairingResponse> response = CommonResponse.fail(503, errorMsg);
+            return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
@@ -61,6 +68,7 @@ public class PairingController {
         } else {
             throw new InvalidDifficultyLevelException(String.valueOf(difficultyLevel));
         }
-        return ResponseEntity.ok().build();
+        final CommonResponse<Object> response = CommonResponse.success(successMsg, new Object());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

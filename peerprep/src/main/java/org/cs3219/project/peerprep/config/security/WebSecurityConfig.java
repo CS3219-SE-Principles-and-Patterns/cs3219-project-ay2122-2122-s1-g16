@@ -66,7 +66,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                     .exceptionHandling()
                     .authenticationEntryPoint(simpleAuthenticationEntryPoint);
-
         } else {
             http.csrf().disable().authorizeRequests().anyRequest().permitAll();
         }
@@ -85,9 +84,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return provider;
     }
 
-//    public UsernamePasswordAuthenticationFilter getUsernamePasswordAuthenticationFilter() {
-//        UsernamePasswordAuthenticationFilter filter = new UsernamePasswordAuthenticationFilter();
-//        filter.setFilterProcessesUrl("/api/v1/account/login");
-//        return filter;
-//    }
 }

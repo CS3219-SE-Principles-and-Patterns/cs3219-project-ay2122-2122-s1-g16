@@ -15,7 +15,8 @@ public class CorsConfig implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         final HttpServletResponse response = (HttpServletResponse) res;
-        response.setHeader("Access-Control-Allow-Origin", "null");
+        // TODO: add frontend production domain to allowed origin
+        response.setHeader("Access-Control-Allow-Origin", "null, http://localhost:3000");
         response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
         response.setHeader("Access-Control-Allow-Credentials", "true");

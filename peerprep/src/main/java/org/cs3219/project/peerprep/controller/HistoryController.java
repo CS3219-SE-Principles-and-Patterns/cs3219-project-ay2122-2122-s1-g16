@@ -7,6 +7,8 @@ import org.cs3219.project.peerprep.model.dto.interview.UserAttemptedQuestion;
 import org.cs3219.project.peerprep.model.dto.interview.UserAttemptedQuestionResponse;
 import org.cs3219.project.peerprep.service.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,21 +19,21 @@ public class HistoryController {
     private HistoryService historyService;
 
     @GetMapping("/question")
-    public CommonResponse<UserAttemptedQuestionResponse> getUserAttemptedQuestions(@RequestParam Long userId,
-                                                                                   @RequestParam Integer pageNum,
-                                                                                   @RequestParam Integer pageSize) {
+    public ResponseEntity<CommonResponse<UserAttemptedQuestionResponse>> getUserAttemptedQuestions(@RequestParam Long userId,
+                                                                                                   @RequestParam Integer pageNum,
+                                                                                                   @RequestParam Integer pageSize) {
         CommonPage<UserAttemptedQuestion> userAttemptedQuestions = historyService.getUserAttemptedQuestions(userId, pageNum, pageSize);
         UserAttemptedQuestionResponse userAttemptedQuestionResponse = UserAttemptedQuestionResponse.builder()
                 .userId(userId)
                 .questions(userAttemptedQuestions)
                 .build();
-        return CommonResponse.success(userAttemptedQuestionResponse);
+        return new ResponseEntity<>(CommonResponse.success(userAttemptedQuestionResponse), HttpStatus.OK);
     }
 
-    @GetMapping("/attempt/{historyId}")
-    public CommonResponse<UserAttemptDetail> getUserAttemptDetail(@PathVariable("historyId") Long historyId,
-                                                                  @RequestParam Long userId) {
+    @GetMapping("/{historyId}")
+    public ResponseEntity<CommonResponse<UserAttemptDetail>> getUserAttemptDetail(@PathVariable("historyId") Long historyId,
+                                                                                  @RequestParam Long userId) {
         UserAttemptDetail userAttemptDetail = historyService.getUserAttemptDetail(historyId, userId);
-        return CommonResponse.success(userAttemptDetail);
+        return new ResponseEntity<>(CommonResponse.success(userAttemptDetail), HttpStatus.OK);
     }
 }

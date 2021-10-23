@@ -8,6 +8,8 @@ import org.cs3219.project.peerprep.model.dto.interview.SaveAnswerRequest;
 import org.cs3219.project.peerprep.model.dto.interview.SaveAnswerResponse;
 import org.cs3219.project.peerprep.service.InterviewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,18 +21,19 @@ public class InterviewController {
     private InterviewService interviewService;
 
     @GetMapping("/question")
-    public CommonResponse<InterviewDetailsResponse> getInterviewDetails(@RequestParam Long userId, @RequestParam Integer difficulty) {
+    public ResponseEntity<CommonResponse<InterviewDetailsResponse>> getInterviewDetails(@RequestParam Long userId,
+                                                                                        @RequestParam Integer difficulty) {
         InterviewDetailsRequest interviewRequest = InterviewDetailsRequest.builder()
                 .userId(userId)
                 .difficulty(difficulty)
                 .build();
         InterviewDetailsResponse interviewResponse = interviewService.getInterviewDetails(interviewRequest);
-        return CommonResponse.success(interviewResponse);
+        return new ResponseEntity<>(CommonResponse.success(interviewResponse), HttpStatus.OK);
     }
 
     @PostMapping("/answer")
-    public CommonResponse<SaveAnswerResponse> saveUserAnswer(@RequestBody SaveAnswerRequest saveAnswerRequest) {
+    public ResponseEntity<CommonResponse<SaveAnswerResponse>> saveUserAnswer(@RequestBody SaveAnswerRequest saveAnswerRequest) {
         SaveAnswerResponse saveAnswerResponse = interviewService.saveUserAnswer(saveAnswerRequest);
-        return CommonResponse.create(saveAnswerResponse);
+        return new ResponseEntity<>(CommonResponse.create(saveAnswerResponse), HttpStatus.CREATED);
     }
 }

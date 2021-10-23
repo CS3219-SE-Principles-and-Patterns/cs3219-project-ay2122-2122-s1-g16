@@ -29,7 +29,7 @@ public class HistoryServiceImpl implements HistoryService {
 
     @Override
     public CommonPage<UserAttemptedQuestion> getUserAttemptedQuestions(Long userId, Integer pageNum, Integer pageSize) {
-        log.info("InterviewService.getUserAttemptedQuestions.userId:{}", userId);
+        log.debug("InterviewService.getUserAttemptedQuestions.userId:{}", userId);
         List<UserAttemptedQuestion> userAttemptedQuestions = new ArrayList<>();
         Page<UserQuestionHistory> userQuestionHistoryPage = historyRepository.fetchAttemptedQuestionsByUserId(userId, pageNum, pageSize);
         for (UserQuestionHistory userQuestionHistory : userQuestionHistoryPage.getRecords()) {
@@ -54,7 +54,7 @@ public class HistoryServiceImpl implements HistoryService {
 
     @Override
     public UserAttemptDetail getUserAttemptDetail(Long historyId, Long userId) {
-        log.info("InterviewService.getUserAttemptDetail.historyId:{}, userId:{}", historyId, userId);
+        log.debug("InterviewService.getUserAttemptDetail.historyId:{}, userId:{}", historyId, userId);
         UserQuestionHistory userQuestionHistory = historyRepository.fetchAttemptedQuestionById(historyId);
         if (!userId.equals(userQuestionHistory.getUserId())) {
             return null;

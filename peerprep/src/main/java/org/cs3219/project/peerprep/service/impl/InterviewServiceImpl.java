@@ -29,7 +29,7 @@ public class InterviewServiceImpl implements InterviewService {
 
     @Override
     public InterviewDetailsResponse getInterviewDetails(InterviewDetailsRequest interviewDetailsRequest) {
-        log.info("InterviewService.getInterviewDetails.request:{}", interviewDetailsRequest);
+        log.debug("InterviewService.getInterviewDetails.request:{}", interviewDetailsRequest);
         // Retrieve user's unattempted questions
         List<InterviewQuestion> interviewQuestions = questionRepository.fetchQuestionsByDifficulty(interviewDetailsRequest.getDifficulty());
         List<UserQuestionHistory> userQuestionHistories = historyRepository.fetchAttemptedQuestionsByUserId(interviewDetailsRequest.getUserId());
@@ -69,7 +69,7 @@ public class InterviewServiceImpl implements InterviewService {
 
     @Override
     public SaveAnswerResponse saveUserAnswer(SaveAnswerRequest saveAnswerRequest) {
-        log.info("InterviewService.saveUserAnswer.request:{}", saveAnswerRequest);
+        log.debug("InterviewService.saveUserAnswer.request:{}", saveAnswerRequest);
         UserQuestionHistory userQuestionHistory = UserQuestionHistory.builder()
                 .userId(saveAnswerRequest.getUserId())
                 .questionId(saveAnswerRequest.getQuestionId())

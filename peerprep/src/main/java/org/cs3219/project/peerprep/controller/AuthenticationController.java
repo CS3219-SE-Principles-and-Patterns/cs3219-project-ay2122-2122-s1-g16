@@ -54,7 +54,7 @@ public class AuthenticationController {
         emailService.send(subject, recepientEmail, senderEmail, emailContent);
          */
 
-        CommonResponse<RegistrationResponse> commonResponse = new CommonResponse<>(HttpStatus.CREATED.value(), "success", resp);
+        CommonResponse<RegistrationResponse> commonResponse = new CommonResponse<>(HttpStatus.CREATED.value(), "created", resp);
         return new ResponseEntity<>(commonResponse, HttpStatus.CREATED);
     }
 
@@ -99,7 +99,7 @@ public class AuthenticationController {
     }
 
 
-    @PostMapping(path = "/password/reset")
+    @PutMapping(path = "/password/reset")
     public ResponseEntity<CommonResponse<PasswordResetResponse>> resetPassword(@RequestBody @Valid PasswordResetRequest request) {
         User user = authenticationService.resetPassword(request.getEmail(), request.getPassword(), request.getToken());
         PasswordResetResponse resp = new PasswordResetResponse(

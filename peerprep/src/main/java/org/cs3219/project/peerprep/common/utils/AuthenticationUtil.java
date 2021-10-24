@@ -12,8 +12,8 @@ public class AuthenticationUtil {
     private String frontendDomain;
 
     private final String activationApi = "/api/v1/account/activate";
-    private final String frontendPasswordResetApi = "xxx"; // TODO: change when frontend is ready
-    private final String frontendLandingApi = "xxx"; // TODO: change when frontend is ready
+    private final String frontendPasswordResetApi = "/xxx"; // TODO: change when frontend is ready
+    private final String frontendLandingApi = "/xxx"; // TODO: change when frontend is ready
 
     public AuthenticationUtil() {
 

@@ -19,4 +19,4 @@ CREATE TABLE IF NOT EXISTS `user_profile` (
     INDEX (locked),
     INDEX (activation_time)
 ) ENGINE = INNODB
-  CHARACTER SET = utf8;
+  CHARACTER SET = utf8mb4;

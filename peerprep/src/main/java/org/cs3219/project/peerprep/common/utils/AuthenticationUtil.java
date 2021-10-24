@@ -1,31 +1,49 @@
 package org.cs3219.project.peerprep.common.utils;
 
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
 public class AuthenticationUtil {
-    private static String ACTIVATION_ENDPOINT = "http://localhost:8080/api/v1/account/activate";
-    private static String PASSWORD_RESET_REDIRECT_ENDPOINT = "http://xxx"; // TODO: frontend url
+    @Value("${custom.domain.backend}")
+    private String backendDomain;
+    @Value("${custom.domain.frontend}")
+    private String frontendDomain;
 
-    public static String generateActivationUrl(String email, String token) {
-        return String.format(ACTIVATION_ENDPOINT + "?email=%s&token=%s", email, token);
+    private final String activationApi = "/api/v1/account/activate";
+    private final String frontendPasswordResetApi = "/xxx"; // TODO: change when frontend is ready
+    private final String frontendLandingApi = "/xxx"; // TODO: change when frontend is ready
+
+    public AuthenticationUtil() {
+
     }
 
-    public static String generatePasswordResetUrl(String email, String token) {
-        return String.format(PASSWORD_RESET_REDIRECT_ENDPOINT + "?email=%s&token=%s", email, token);
+    public String generateActivationUrl(String email, String token) {
+        return String.format(backendDomain + activationApi + "?email=%s&token=%s", email, token);
     }
 
-    public static String generateActivationEmailSubject() {
+    public String generatePasswordResetUrl(String email, String token) {
+        return String.format(frontendDomain + frontendPasswordResetApi + "?email=%s&token=%s", email, token);
+    }
+
+    public String generateActivationEmailSubject() {
         return "Activate Your Peerprep Account";
     }
 
-    public static String generatePasswordResetEmailSubject() {
+    public String generatePasswordResetEmailSubject() {
         return "Reset Your Peerprep Password";
     }
 
-    public static String generateEmailSenderAddress() {
-        return "peerprep@no-reply.com";
+    public String generateEmailSenderAddress() {
+        return "cs3219g16@gmail.com";
     }
 
-    public static String buildActivationEmailContent(String url) {
+    public String generateFrontendLandingUrl() {
+        return frontendDomain + frontendLandingApi;
+    }
+
+    public String buildActivationEmailContent(String url) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
@@ -94,7 +112,7 @@ public class AuthenticationUtil {
                 "</div></div>";
     }
 
-    public static String buildPasswordResetEmailContent(String url) {
+    public String buildPasswordResetEmailContent(String url) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +

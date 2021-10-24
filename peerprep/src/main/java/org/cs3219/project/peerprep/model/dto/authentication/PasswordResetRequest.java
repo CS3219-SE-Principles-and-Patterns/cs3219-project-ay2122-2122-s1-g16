@@ -14,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 public class PasswordResetRequest {
     @JsonProperty("email")
     @Email(message = "email must be a valid email address")
+    @NotBlank(message = "email cannot be blank")
     private String email;
 
     @JsonProperty("password")

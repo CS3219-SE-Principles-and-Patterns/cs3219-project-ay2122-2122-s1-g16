@@ -30,10 +30,23 @@ public class UserService implements UserDetailsService {
                 );
     }
 
+    public User getUserById(int id) throws NoSuchElementException {
+        return userRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException(String.format("user with id %d is not found", id))
+        );
+    }
+
     public User getUserByEmail(String email) throws NoSuchElementException {
         return userRepository.findByEmail(email).orElseThrow(
                 () -> new NoSuchElementException(String.format("user with email %s is not found", email))
         );
+    }
+
+    public User updateNickname(int id, String nickname) {
+        User user = getUserById(id);
+        user.setNickname(nickname);
+        userRepository.updateNickname(id, nickname);
+        return user;
     }
 
 }

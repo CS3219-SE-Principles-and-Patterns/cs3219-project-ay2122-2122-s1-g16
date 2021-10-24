@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.*;
 
 // TODO: modify according to CommonResponse
@@ -29,16 +31,27 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+            MethodArgumentNotValidException e) {
 
         StringBuilder errorMsgBuilder = new StringBuilder();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+        e.getBindingResult().getAllErrors().forEach((error) -> {
             String errorMessage = error.getDefaultMessage();
             errorMsgBuilder.append(errorMessage);
             errorMsgBuilder.append(";");
         });
 
         CommonResponse<Map<String, String>> resp = new CommonResponse<>(HttpStatus.BAD_REQUEST.value(), errorMsgBuilder.toString(), null);
+        return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e) {
+        StringBuilder errorMsgBuilder = new StringBuilder();
+        for (ConstraintViolation v: e.getConstraintViolations()) {
+            errorMsgBuilder.append(v.getMessage());
+            errorMsgBuilder.append(";");
+        }
+        CommonResponse<Object> resp = new CommonResponse<>(HttpStatus.BAD_REQUEST.value(), errorMsgBuilder.toString(), null);
         return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
     }
 

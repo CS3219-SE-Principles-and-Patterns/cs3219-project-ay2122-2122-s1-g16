@@ -1,6 +1,7 @@
 package org.cs3219.project.peerprep.controller;
 
 import lombok.AllArgsConstructor;
+import org.aspectj.bridge.IMessage;
 import org.cs3219.project.peerprep.common.api.CommonResponse;
 import org.cs3219.project.peerprep.common.utils.AuthenticationUtil;
 import org.cs3219.project.peerprep.model.dto.authentication.*;
@@ -11,6 +12,7 @@ import org.cs3219.project.peerprep.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,6 +22,7 @@ import javax.validation.constraints.NotBlank;
 @RestController
 @RequestMapping(value = "/api/v1/account")
 @AllArgsConstructor
+@Validated
 public class AuthenticationController {
     @Autowired
     private final AuthenticationService authenticationService;
@@ -50,16 +53,18 @@ public class AuthenticationController {
         String emailContent = AuthenticationUtil.buildActivationEmailContent(url);
         emailService.send(subject, recepientEmail, senderEmail, emailContent);
          */
-        
+
         CommonResponse<RegistrationResponse> commonResponse = new CommonResponse<>(HttpStatus.CREATED.value(), "success", resp);
         return new ResponseEntity<>(commonResponse, HttpStatus.CREATED);
     }
 
     // TODO: need to configure CORS for this endpoint to allow request from anywhere
     @GetMapping(path = "/activate")
-    public ResponseEntity<CommonResponse<RegistrationResponse>> activate(@RequestParam("email") @Email(message = "email must a valid email address") String email,
-                                                         @RequestParam("token") @NotBlank(message = "token cannot be blank") String token
-                                                         ) {
+    public ResponseEntity<CommonResponse<RegistrationResponse>> activate(@RequestParam("email")
+                                                                         @Email(message = "email must a valid email address")
+                                                                         @NotBlank(message = "email cannot be blank")
+                                                                                 String email,
+                                                                         @RequestParam("token") @NotBlank(message = "token cannot be blank") String token) {
         User user = authenticationService.activate(email, token);
         RegistrationResponse resp = new RegistrationResponse(
                 user.getId(),
@@ -72,7 +77,10 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/password/pre-reset")
-    public ResponseEntity<CommonResponse<PasswordPreResetResponse>> preResetPassword(@RequestParam("email") @Email String email) {
+    public ResponseEntity<CommonResponse<PasswordPreResetResponse>> preResetPassword(@RequestParam("email")
+                                                                                     @Email(message = "email must a valid email address")
+                                                                                     @NotBlank(message = "email cannot be blank")
+                                                                                             String email) {
         String token = authenticationService.generatePasswordToken(email);
         PasswordPreResetResponse resp = new PasswordPreResetResponse(email, token);
 

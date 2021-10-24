@@ -28,12 +28,17 @@ spring:
           auth: true
           starttls:
             enable: true
-          connectiontimeout: 5000
+          connectiontimeout: 3000
           timeout: 3000
-          writetimeout: 5000
+          writetimeout: 3000
 
 custom:
   auth:
+    enable: true
+  domain:
+    backend: "http://localhost:8080"
+    frontend: "http://localhost:3000"
+  email:
     enable: true
 
 interview:

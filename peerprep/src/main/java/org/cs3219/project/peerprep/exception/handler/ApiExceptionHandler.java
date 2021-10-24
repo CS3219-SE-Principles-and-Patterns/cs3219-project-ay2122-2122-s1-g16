@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.mail.MessagingException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.*;
@@ -56,8 +57,15 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(value = InvalidDifficultyLevelException.class)
-    public ResponseEntity<Object> exception(InvalidDifficultyLevelException e) {
+    public ResponseEntity<Object> handleInvalidDifficultyLevelException(InvalidDifficultyLevelException e) {
         CommonResponse<Object> resp = new CommonResponse<>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
         return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<Object> handleMessagingException(MessagingException e) {
+        String errorMsg = "fail to send email: " + e.getMessage();
+        CommonResponse<Object> resp = new CommonResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorMsg, null);
+        return new ResponseEntity<>(resp, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

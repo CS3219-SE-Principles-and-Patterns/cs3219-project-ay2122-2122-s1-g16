@@ -1,6 +1,7 @@
 package org.cs3219.project.peerprep.controller;
 
 import lombok.AllArgsConstructor;
+import org.cs3219.project.peerprep.common.api.CommonResponse;
 import org.cs3219.project.peerprep.common.utils.AuthenticationUtil;
 import org.cs3219.project.peerprep.model.dto.authentication.*;
 import org.cs3219.project.peerprep.model.entity.User;
@@ -26,7 +27,7 @@ public class AuthenticationController {
     private final EmailService emailService;
 
     @PostMapping(path = "/register")
-    public ResponseEntity<RegistrationResponse> register(@RequestBody @Valid RegistrationRequest request) {
+    public ResponseEntity<CommonResponse<RegistrationResponse>> register(@RequestBody @Valid RegistrationRequest request) {
         User user = authenticationService.createNewUser(new User(request.getEmail(),
                 request.getNickname(),
                 request.getPassword(),
@@ -49,12 +50,14 @@ public class AuthenticationController {
         String emailContent = AuthenticationUtil.buildActivationEmailContent(url);
         emailService.send(subject, recepientEmail, senderEmail, emailContent);
          */
-        return new ResponseEntity<>(resp, HttpStatus.CREATED);
+        
+        CommonResponse<RegistrationResponse> commonResponse = new CommonResponse<>(HttpStatus.CREATED.value(), "success", resp);
+        return new ResponseEntity<>(commonResponse, HttpStatus.CREATED);
     }
 
     // TODO: need to configure CORS for this endpoint to allow request from anywhere
     @GetMapping(path = "/activate")
-    public ResponseEntity<RegistrationResponse> activate(@RequestParam("email") @Email(message = "email must a valid email address") String email,
+    public ResponseEntity<CommonResponse<RegistrationResponse>> activate(@RequestParam("email") @Email(message = "email must a valid email address") String email,
                                                          @RequestParam("token") @NotBlank(message = "token cannot be blank") String token
                                                          ) {
         User user = authenticationService.activate(email, token);
@@ -64,11 +67,12 @@ public class AuthenticationController {
                 user.getNickname(),
                 user.getActivationToken()
         );
-        return new ResponseEntity<>(resp, HttpStatus.OK);
+        CommonResponse<RegistrationResponse> CommonResponse = new CommonResponse<>(HttpStatus.OK.value(), "success", resp);
+        return new ResponseEntity<>(CommonResponse, HttpStatus.OK);
     }
 
     @PostMapping(path = "/password/pre-reset")
-    public ResponseEntity<PasswordPreResetResponse> preResetPassword(@RequestParam("email") @Email String email) {
+    public ResponseEntity<CommonResponse<PasswordPreResetResponse>> preResetPassword(@RequestParam("email") @Email String email) {
         String token = authenticationService.generatePasswordToken(email);
         PasswordPreResetResponse resp = new PasswordPreResetResponse(email, token);
 
@@ -82,18 +86,20 @@ public class AuthenticationController {
         String emailContent = AuthenticationUtil.buildPasswordResetEmailContent(url);
         emailService.send(subject, recipientEmail, senderEmail, emailContent);
          */
-        return new ResponseEntity<>(resp, HttpStatus.OK);
+        CommonResponse<PasswordPreResetResponse> CommonResponse = new CommonResponse<>(HttpStatus.OK.value(), "success", resp);
+        return new ResponseEntity<>(CommonResponse, HttpStatus.OK);
     }
 
 
     @PostMapping(path = "/password/reset")
-    public ResponseEntity<PasswordResetResponse> resetPassword(@RequestBody @Valid PasswordResetRequest request) {
+    public ResponseEntity<CommonResponse<PasswordResetResponse>> resetPassword(@RequestBody @Valid PasswordResetRequest request) {
         User user = authenticationService.resetPassword(request.getEmail(), request.getPassword(), request.getToken());
         PasswordResetResponse resp = new PasswordResetResponse(
                 user.getId(),
                 user.getEmail(),
                 user.getNickname()
         );
-        return new ResponseEntity<>(resp, HttpStatus.OK);
+        CommonResponse<PasswordResetResponse> CommonResponse = new CommonResponse<>(HttpStatus.OK.value(), "success", resp);
+        return new ResponseEntity<>(CommonResponse, HttpStatus.OK);
     }
 }

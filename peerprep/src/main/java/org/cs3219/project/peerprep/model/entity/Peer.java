@@ -8,6 +8,8 @@ public class Peer {
 
     private Peer peer;
 
+    private int interviewer;
+
     public Peer(Long userId, int difficulty) {
         this.userId = userId;
         this.difficulty = difficulty;
@@ -27,6 +29,14 @@ public class Peer {
 
     public Peer getPeer() {
         return this.peer;
+    }
+
+    public void setInterviewer(int i) {
+        this.interviewer = i;
+    }
+
+    public int getInterviewer() {
+        return this.interviewer;
     }
 
     @Override

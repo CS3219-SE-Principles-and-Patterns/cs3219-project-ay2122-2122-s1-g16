@@ -39,16 +39,7 @@ public class PairingController {
     @GetMapping("/queue")
     public ResponseEntity<Object> getPairingResponse(@RequestParam(name=idProperty) Long userId,
                                                      @RequestParam (name=difficultyProperty) int difficultyLevel) {
-        final int difficulty;
-        if (difficultyLevel >= 0 && difficultyLevel < level) {
-            difficulty = difficultyLevel;
-        } else {
-            throw new InvalidDifficultyLevelException(String.valueOf(difficultyLevel));
-        }
-        final PairingRequest pairingRequest = PairingRequest.builder()
-                .userId(userId)
-                .difficulty(difficulty)
-                .build();
+        PairingRequest pairingRequest = validatePairingRequest(userId, difficultyLevel);
         try {
             final PairingResponse pairingResponse = pairingService.getPairingResult(pairingRequest);
             final CommonResponse<PairingResponse> response = CommonResponse.success(successMsg, pairingResponse);
@@ -62,13 +53,27 @@ public class PairingController {
     @GetMapping("/dequeue")
     public ResponseEntity<Object> getExitPairingResponse(@RequestParam(name=idProperty) Long userId,
                                                      @RequestParam (name=difficultyProperty) int difficultyLevel) {
+        PairingRequest pairingRequest = validatePairingRequest(userId, difficultyLevel);
+        try {
+            pairingService.getExitPairingResult(pairingRequest);
+            final CommonResponse<Object> response = CommonResponse.success(successMsg, new Object());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (InterruptedException e) {
+            final CommonResponse<PairingResponse> response = CommonResponse.fail(503, errorMsg);
+            return new ResponseEntity<>(response, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    private PairingRequest validatePairingRequest(Long userId, int difficultyLevel) {
         final int difficulty;
         if (difficultyLevel >= 0 && difficultyLevel < level) {
             difficulty = difficultyLevel;
         } else {
             throw new InvalidDifficultyLevelException(String.valueOf(difficultyLevel));
         }
-        final CommonResponse<Object> response = CommonResponse.success(successMsg, new Object());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return PairingRequest.builder()
+                .userId(userId)
+                .difficulty(difficulty)
+                .build();
     }
 }

@@ -21,6 +21,7 @@ public class PairingServiceImpl implements PairingService {
                         .userId(user.getUserId())
                         .peerId(user.getPeer().getUserId())
                         .difficulty(user.getDifficulty())
+                        .interviewer(user.getInterviewer())
                         .build();
             }
             Thread.sleep(1000);

@@ -16,4 +16,7 @@ public class PairingResponse {
 
     @JsonProperty("difficulty")
     private int difficulty;
+
+    @JsonProperty("interviewer")
+    private int interviewer;
 }

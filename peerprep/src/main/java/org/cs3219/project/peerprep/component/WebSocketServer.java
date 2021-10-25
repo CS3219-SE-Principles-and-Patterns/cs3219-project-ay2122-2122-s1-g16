@@ -48,7 +48,13 @@ public class WebSocketServer {
             webSocketServerMap.put(userId, this);
             onlineCount.incrementAndGet();
         }
-        log.info("[WebSocketServer.onOpen] connected user:{}, total online users:{}", userId, onlineCount.get());
+
+        try {
+            sendMessage("Successfully connected!");
+            log.info("[WebSocketServer.onOpen] connected user:{}, total online users:{}", userId, onlineCount.get());
+        } catch (IOException e) {
+            log.error("[WebSocketServer.onOpen] userId:{}, error: ", userId, e);
+        }
     }
 
     @OnClose
@@ -81,7 +87,6 @@ public class WebSocketServer {
     @OnError
     public void onError(Session session, Throwable error) {
         log.error("[WebSocketServer.onError] userId:{}, error: ", userId, error);
-        error.printStackTrace();
     }
 
     public void sendMessage(String message) throws IOException {

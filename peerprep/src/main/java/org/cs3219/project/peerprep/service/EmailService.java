@@ -23,8 +23,7 @@ public class EmailService {
     @Autowired
     private final JavaMailSender mailSender;
 
-    @Async
-    public void send(String subject, String recipientAddress, String senderAddress, String content) {
+    public void send(String subject, String recipientAddress, String senderAddress, String content) throws MessagingException {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper =
@@ -36,7 +35,7 @@ public class EmailService {
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
             LOGGER.error("failed to send email", e);
-            throw new IllegalStateException("failed to send email");
+            throw e;
         }
     }
 }

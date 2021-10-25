@@ -24,6 +24,7 @@ public class AuthenticationService {
 
     public User createNewUser(User user) throws IllegalArgumentException {
         String email = user.getEmail();
+        String token = UUID.randomUUID().toString();
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User savedUser = optionalUser.get();
@@ -31,13 +32,17 @@ public class AuthenticationService {
                 throw new IllegalArgumentException(String.format("email %s is taken", email));
             }
 
+            // user registered but not activated, send back recorded token and refresh expire time
+            LocalDateTime expireTime = savedUser.getActivationTokenExpireTime();
+            if (expireTime.isAfter(LocalDateTime.now())) {
+                token = savedUser.getActivationToken();
+            }
             user.setId(savedUser.getId());
         }
 
         String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
 
-        String token = UUID.randomUUID().toString();
         LocalDateTime expireTime = LocalDateTime.now().plusMinutes(LIFETIME);
         user.setActivationToken(token);
         user.setActivationTokenExpireTime(expireTime);

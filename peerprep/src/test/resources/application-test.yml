@@ -35,6 +35,11 @@ spring:
 custom:
   auth:
     enable: false
+  domain:
+    backend: "http://localhost:8080"
+    frontend: "http://localhost:3000"
+  email:
+    enable: false
 
 interview:
   dayDuration: 10

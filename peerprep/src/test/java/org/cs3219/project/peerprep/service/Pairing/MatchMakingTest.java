@@ -100,8 +100,8 @@ public class MatchMakingTest {
 
     @Test
     public void testFifo() throws InterruptedException {
-        MatchMaking.reset();
         synchronized (MatchMaking.class) {
+            MatchMaking.reset();
             for (int j = 0; j < groupSize - 2; j++) {
                 Peer user = peers[0][j];
                 MatchMaking.addPeer(user);

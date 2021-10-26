@@ -15,10 +15,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@ServerEndpoint("/interview/{userId}")
+@ServerEndpoint("/interview/switch/{userId}")
 @Component
 @Slf4j
-public class WebSocketServer {
+public class InterviewSwitchWebSocketServer {
 
     /**
      * Keep record of current number of connections
@@ -28,7 +28,7 @@ public class WebSocketServer {
     /**
      * Store all online connected server-client
      */
-    private static final Map<String, WebSocketServer> webSocketServerMap = new ConcurrentHashMap<>();
+    private static final Map<String, InterviewSwitchWebSocketServer> webSocketServerMap = new ConcurrentHashMap<>();
 
     private Session session;
 
@@ -51,9 +51,9 @@ public class WebSocketServer {
 
         try {
             sendMessage("Successfully connected!");
-            log.info("[WebSocketServer.onOpen] connected user:{}, total online users:{}", userId, onlineCount.get());
+            log.info("[InterviewSwitchWebSocketServer.onOpen] connected user:{}, total online users:{}", userId, onlineCount.get());
         } catch (IOException e) {
-            log.error("[WebSocketServer.onOpen] userId:{}, error: ", userId, e);
+            log.error("[InterviewSwitchWebSocketServer.onOpen] userId:{}, error: ", userId, e);
         }
     }
 
@@ -63,33 +63,33 @@ public class WebSocketServer {
             webSocketServerMap.remove(userId);
             onlineCount.decrementAndGet();
         }
-        log.info("[WebSocketServer.onClose] exited user:{}, total online users:{}", userId, onlineCount.get());
+        log.info("[InterviewSwitchWebSocketServer.onClose] exited user:{}, total online users:{}", userId, onlineCount.get());
     }
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        log.info("[WebSocketServer.onMessage.MessageSource] userId:{}, message:{}", userId, message);
+        log.info("[InterviewSwitchWebSocketServer.onMessage.MessageSource] userId:{}, message:{}", userId, message);
         try {
             if (StringUtils.isNotBlank(message)) {
                 PeerMessage peerMessage = objectMapper.readValue(message, PeerMessage.class);
                 String peerId = peerMessage.getPeerId().toString();
                 if (StringUtils.isNotBlank(peerId) && webSocketServerMap.containsKey(peerId)) {
-                    webSocketServerMap.get(peerId).sendMessage(peerMessage.getData());
+                    webSocketServerMap.get(peerId).sendMessage(peerMessage.getSwitchRole().toString());
                 } else {
-                    log.error("[WebSocketServer.onMessage.PeerNotFound] peerId:{}", peerId);
+                    log.error("[InterviewSwitchWebSocketServer.onMessage.PeerNotFound] peerId:{}", peerId);
                 }
             }
         } catch (IOException e) {
-            log.error("[WebSocketServer.OnMessage] error: ", e);
+            log.error("[InterviewSwitchWebSocketServer.OnMessage] error: ", e);
         }
     }
 
     @OnError
     public void onError(Session session, Throwable error) {
-        log.error("[WebSocketServer.onError] userId:{}, error: ", userId, error);
+        log.error("[InterviewSwitchWebSocketServer.onError] userId:{}, error: ", userId, error);
     }
 
     public void sendMessage(String message) throws IOException {
-        this.session.getBasicRemote().sendText(message);
+        this.session.getAsyncRemote().sendText(message);
     }
 }

@@ -8,4 +8,6 @@ public class PeerMessage {
     private Long peerId;
 
     private String data;
+
+    private Boolean switchRole;
 }

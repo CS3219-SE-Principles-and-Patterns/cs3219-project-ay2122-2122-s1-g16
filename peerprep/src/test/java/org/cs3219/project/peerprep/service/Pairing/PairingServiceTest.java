@@ -1,9 +1,8 @@
-package org.cs3219.project.peerprep.integration;
+package org.cs3219.project.peerprep.service.Pairing;
 
 import org.assertj.core.api.SoftAssertions;
 import org.cs3219.project.peerprep.model.dto.PairingRequest;
 import org.cs3219.project.peerprep.model.dto.PairingResponse;
-import org.cs3219.project.peerprep.service.Pairing.MatchMaking;
 import org.cs3219.project.peerprep.service.PairingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

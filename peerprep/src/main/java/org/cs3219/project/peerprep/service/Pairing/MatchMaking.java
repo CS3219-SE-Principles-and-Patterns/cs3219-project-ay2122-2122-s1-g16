@@ -1,6 +1,5 @@
 package org.cs3219.project.peerprep.service.Pairing;
 
-import org.assertj.core.util.VisibleForTesting;
 import org.cs3219.project.peerprep.model.entity.Peer;
 
 import java.util.ArrayList;

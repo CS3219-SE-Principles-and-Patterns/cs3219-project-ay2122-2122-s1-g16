@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 
-class MatchMaking {
+public class MatchMaking {
 
     private static final int LEVEL = 3;
 

@@ -1,4 +1,4 @@
-package org.cs3219.project.peerprep.service.Pairing;
+package org.cs3219.project.peerprep.service;
 
 import org.cs3219.project.peerprep.model.dto.PairingRequest;
 import org.cs3219.project.peerprep.model.dto.PairingResponse;

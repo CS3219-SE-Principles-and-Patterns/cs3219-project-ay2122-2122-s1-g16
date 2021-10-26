@@ -25,11 +25,11 @@ public class PairingIntegrationTest {
     @Autowired
     private MockMvc mvc;
 
-    private static String baseUrl = "/api/v1/match/";
+    private String baseUrl = "/api/v1/match/";
 
-    private static String matchUrl = baseUrl + "queue?id={id}&difficulty={difficulty}";
+    private String matchUrl = baseUrl + "queue?id={id}&difficulty={difficulty}";
 
-    private static String unmatchUrl = baseUrl + "dequeue?id={id}&difficulty={difficulty}";
+    private String unmatchUrl = baseUrl + "dequeue?id={id}&difficulty={difficulty}";
 
     @Test
     public void testInvalidDifficulty() throws Exception {
@@ -45,7 +45,7 @@ public class PairingIntegrationTest {
     @Test
     public void testMatching() {
         synchronized (MatchMaking.class) {
-            MatchMaking.reset();
+            // MatchMaking.reset();
             ThreadPoolExecutor executor =
                     (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
             SoftAssertions softly = new SoftAssertions();
@@ -53,11 +53,11 @@ public class PairingIntegrationTest {
             executor.submit(() -> {
                 try {
                     mvc.perform(MockMvcRequestBuilders
-                            .get(matchUrl, 20170, 1)
+                            .get(matchUrl, 1, 0)
                             .accept(MediaType.APPLICATION_JSON))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(20170))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(1))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.peer_id").value(11993))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(2))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(0))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.peer_id").value(1))
                             .andReturn();
                 } catch (Exception e) {
                     softly.fail("Interrupted");
@@ -66,11 +66,11 @@ public class PairingIntegrationTest {
             executor.submit(() -> {
                 try {
                     mvc.perform(MockMvcRequestBuilders
-                            .get(matchUrl, 11993, 1)
+                            .get(matchUrl, 2, 0)
                             .accept(MediaType.APPLICATION_JSON))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(11993))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(1))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.peer_id").value(20170))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(0))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.peer_id").value(2))
                             .andReturn();
                 } catch (Exception e) {
                     softly.fail("Interrupted");
@@ -83,7 +83,7 @@ public class PairingIntegrationTest {
     @Test
     public void testFifo() {
         synchronized (MatchMaking.class) {
-            MatchMaking.reset();
+            // MatchMaking.reset();
             ThreadPoolExecutor executor =
                     (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
             SoftAssertions softly = new SoftAssertions();
@@ -91,12 +91,12 @@ public class PairingIntegrationTest {
             executor.submit(() -> {
                 try {
                     mvc.perform(MockMvcRequestBuilders
-                            .get(matchUrl, 123, 1)
+                            .get(matchUrl, 123, 0)
                             .accept(MediaType.APPLICATION_JSON))
                             .andReturn();
                     Thread.sleep(1000);
                     mvc.perform(MockMvcRequestBuilders
-                            .get(unmatchUrl, 123, 1)
+                            .get(unmatchUrl, 123, 0)
                             .accept(MediaType.APPLICATION_JSON))
                             .andExpect(status().isOk())
                             .andReturn();
@@ -109,11 +109,11 @@ public class PairingIntegrationTest {
                 try {
                     Thread.sleep(2000);
                     mvc.perform(MockMvcRequestBuilders
-                            .get(matchUrl, 20170, 1)
+                            .get(matchUrl, 2, 0)
                             .accept(MediaType.APPLICATION_JSON))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(20170))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(1))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.peer_id").value(11993))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(2))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(0))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.peer_id").value(1))
                             .andExpect(MockMvcResultMatchers.jsonPath("$.interviewer").value(1))
                             .andReturn();
                 } catch (Exception e) {
@@ -125,11 +125,11 @@ public class PairingIntegrationTest {
                 try {
                     Thread.sleep(2000);
                     mvc.perform(MockMvcRequestBuilders
-                            .get(matchUrl, 11993, 1)
+                            .get(matchUrl, 1, 0)
                             .accept(MediaType.APPLICATION_JSON))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(11993))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(1))
-                            .andExpect(MockMvcResultMatchers.jsonPath("$.peer_id").value(20170))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(0))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.peer_id").value(2))
                             .andExpect(MockMvcResultMatchers.jsonPath("$.interviewer").value(0))
                             .andReturn();
                 } catch (Exception e) {

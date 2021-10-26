@@ -7,64 +7,53 @@ import org.junit.jupiter.api.Test;
 
 public class MatchMakingTest {
 
-    private final static int level = 3;
+    private final int level = 3;
 
-    private final static int groupSize = 10;
+    private final int groupSize = 10;
 
-    private Peer[][] peers = new Peer[level][groupSize];
+    private Peer[] peers = new Peer[level * groupSize];
+
+    private final static MatchMaking singleton = MatchMaking.getSingleton();
+
+    static {
+        singleton.execute();
+    }
 
     @BeforeEach
     public void init() {
-        for (int i = 0; i < level; i++) {
-            for (int j = 0; j < groupSize; j++) {
-                Long userId = (long) (i * groupSize + j + 1);
-                Peer user = new Peer(userId, i);
-                peers[i][j] = user;
-            }
+        for (int i = 0; i < level * groupSize; i++) {
+            Long userId = (long) (i);
+            Peer user = new Peer(userId, i % level);
+            peers[i] = user;
         }
     }
 
     @Test
     public void testMatch() throws InterruptedException {
-        synchronized (MatchMaking.class) {
-            MatchMaking.reset();
-            for (int j = 0; j < groupSize; j++) {
-                for (int i = 0; i < level; i++) {
-                    Peer user = peers[i][j];
-                    MatchMaking.addPeer(user);
-                }
+        synchronized (singleton) {
+            for (int i = 0; i < level * groupSize; i++) {
+                Peer user = peers[i];
+                singleton.addPeer(user);
             }
 
             Thread.sleep(1000);
 
             SoftAssertions softly = new SoftAssertions();
-            long[][] peerIds = new long[level][groupSize];
-            for (int i = 0; i < level; i++) {
-                for (int j = 0; j < groupSize; j++) {
-                    Peer user = peers[i][j];
-                    if (peerIds[i][j] != 0) { // peer of user already visited
-                        softly.assertThat(user.getPeer().getUserId())
-                                .as("Unmatched peer ids.")
-                                .isEqualTo(peerIds[i][j]);
-                        validateInterviewer(user, user.getPeer());
-                    } else { // peer of user unvisited
-                        // assert peer with same difficulty
-                        softly.assertThat(user.getPeer().getDifficulty())
-                                .as("User " + user.getUserId() + " is matched to more than one peer.")
-                                .isEqualTo(user.getDifficulty());
+            for (int i = 0; i < level * groupSize; i++) {
+                Peer user = peers[i];
+                Peer peer = peers[Math.toIntExact(user.getPeer().getUserId())];
 
-                        // mark user's peerId as peer, and peer's peerId as user
-                        Long peerId = user.getPeer().getUserId();
-                        int peerPos = (int) (peerId - i * groupSize - 1);
-                        softly.assertThat(peerIds[i][peerPos])
-                                .as("User " + peerId + " is matched to more than one peer.")
-                                .isEqualTo(0);
-                        peerIds[i][j] = peerId;
-                        peerIds[i][peerPos] = user.getUserId();
+                // mutual matching
+                softly.assertThat(user.getUserId())
+                        .as("Unmatched peer ids.")
+                        .isEqualTo(peer.getPeer().getUserId());
 
-                        validateInterviewer(user, user.getPeer());
-                    }
-                }
+                // same difficulty
+                softly.assertThat(peer.getDifficulty())
+                        .as("Unmatched difficulty.")
+                        .isEqualTo(user.getDifficulty());
+
+                validateInterviewer(user, user.getPeer());
             }
             softly.assertAll();
         }
@@ -72,26 +61,21 @@ public class MatchMakingTest {
 
     @Test
     public void testUnmatch() throws InterruptedException {
-        synchronized (MatchMaking.class) {
-            MatchMaking.reset();
-            for (int j = 0; j < groupSize; j++) {
-                for (int i = 0; i < level; i++) {
-                    Peer user = peers[i][j];
-                    MatchMaking.addPeer(user);
-                    MatchMaking.addInactivePeer(user);
-                }
+        synchronized (singleton) {
+            for (int i = 0; i < level * groupSize; i++) {
+                Peer user = peers[i];
+                singleton.addPeer(user);
+                singleton.addInactivePeer(user);
             }
 
             Thread.sleep(1000);
 
             SoftAssertions softly = new SoftAssertions();
-            for (int i = 0; i < level; i++) {
-                for (int j = 0; j < groupSize; j++) {
-                    Peer user = peers[i][j];
-                    softly.assertThat(user.getPeer())
-                            .as("No user should be matched to any peer.")
-                            .isNull();
-                }
+            for (int i = 0; i < level * groupSize; i++) {
+                Peer user = peers[i];
+                softly.assertThat(user.getPeer())
+                        .as("No user should be matched to any peer.")
+                        .isNull();
             }
 
             softly.assertAll();
@@ -99,31 +83,27 @@ public class MatchMakingTest {
     }
 
     @Test
-    public void testFifo() throws InterruptedException {
-        synchronized (MatchMaking.class) {
-            MatchMaking.reset();
-            for (int j = 0; j < groupSize - 2; j++) {
-                Peer user = peers[0][j];
-                MatchMaking.addPeer(user);
+    public void testMixed() throws InterruptedException {
+        synchronized (singleton) {
+            for (int j = 0; j < 4; j++) {
+                Peer user = peers[level * j];
+                // match 3 to 9, and dequeue 0 and 6
+                singleton.addPeer(user);
                 if (j % 2 == 0) {
-                    MatchMaking.addInactivePeer(user);
+                    singleton.addInactivePeer(user);
                 }
+                Thread.sleep(1000);
             }
 
             Thread.sleep(1000);
 
             SoftAssertions softly = new SoftAssertions();
-            for (int j = 0; j < groupSize - 2; j++) {
-                Peer user = peers[0][j];
-                if (j % 4 == 1) {
-                    softly.assertThat(user.getPeer().getUserId())
+            for (int j = 0; j < 4; j++) {
+                Peer user = peers[level * j];
+                if (j % 2 == 1) {
+                    softly.assertThat(user.getPeer().getPeer().getUserId())
                             .as("User matching not in FIFO manner.")
-                            .isEqualTo(user.getUserId() + 2);
-                    validateInterviewer(user, user.getPeer());
-                } else if (j % 2 == 1) {
-                    softly.assertThat(user.getPeer().getUserId())
-                            .as("User matching not in FIFO manner.")
-                            .isEqualTo(user.getUserId() - 2);
+                            .isEqualTo(user.getUserId());
                     validateInterviewer(user, user.getPeer());
                 } else {
                     softly.assertThat(user.getPeer()).isNull();

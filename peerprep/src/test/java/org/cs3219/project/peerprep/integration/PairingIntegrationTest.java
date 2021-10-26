@@ -1,4 +1,4 @@
-package org.cs3219.project.peerprep.controller;
+package org.cs3219.project.peerprep.integration;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PairingControllerTest {
+public class PairingIntegrationTest {
 
     @Autowired
     private MockMvc mvc;

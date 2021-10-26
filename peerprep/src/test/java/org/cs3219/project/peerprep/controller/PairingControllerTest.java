@@ -24,11 +24,11 @@ public class PairingControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    private static String baseUrl = "/api/v1/queue/";
+    private static String baseUrl = "/api/v1/match/";
 
-    private static String matchUrl = baseUrl + "match?id={id}&difficulty={difficulty}";
+    private static String matchUrl = baseUrl + "queue?id={id}&difficulty={difficulty}";
 
-    private static String unmatchUrl = baseUrl + "unmatch?id={id}&difficulty={difficulty}";
+    private static String unmatchUrl = baseUrl + "dequeue?id={id}&difficulty={difficulty}";
 
     @Test
     public void testInvalidDifficulty() throws Exception {
@@ -38,7 +38,7 @@ public class PairingControllerTest {
                 .andReturn();
 
         Assertions.assertThat(mvcResult.getResponse().getStatus())
-                .isEqualTo(404);
+                .isEqualTo(400);
     }
 
     @Test

@@ -52,7 +52,7 @@ public class PairingController {
         PairingRequest pairingRequest = validatePairingRequest(userId, difficultyLevel);
         try {
             pairingService.getExitPairingResult(pairingRequest);
-            final CommonResponse<Object> response = CommonResponse.success(successMsg, new Object());
+            final CommonResponse<Object> response = CommonResponse.success(successMsg, null);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (InterruptedException e) {
             final CommonResponse<PairingResponse> response = CommonResponse.fail(503, errorMsg);

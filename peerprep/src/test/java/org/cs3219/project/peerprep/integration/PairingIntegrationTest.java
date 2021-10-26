@@ -45,6 +45,7 @@ public class PairingIntegrationTest {
     @Test
     public void testMatching() {
         synchronized (MatchMaking.class) {
+            MatchMaking.reset();
             ThreadPoolExecutor executor =
                     (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
             SoftAssertions softly = new SoftAssertions();
@@ -82,6 +83,7 @@ public class PairingIntegrationTest {
     @Test
     public void testFifo() {
         synchronized (MatchMaking.class) {
+            MatchMaking.reset();
             ThreadPoolExecutor executor =
                     (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
             SoftAssertions softly = new SoftAssertions();

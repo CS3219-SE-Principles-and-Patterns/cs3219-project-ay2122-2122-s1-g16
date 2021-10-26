@@ -1,5 +1,6 @@
 package org.cs3219.project.peerprep.service.Pairing;
 
+import org.assertj.core.util.VisibleForTesting;
 import org.cs3219.project.peerprep.model.entity.Peer;
 
 import java.util.ArrayList;
@@ -89,5 +90,11 @@ public class MatchMaking {
     static void addInactivePeer(final Peer peer) {
         final int difficulty = peer.getDifficulty();
         inactiveSets.get(difficulty).add(peer);
+    }
+
+    @VisibleForTesting
+    public static void reset() {
+        queues = loadQueue();
+        inactiveSets = loadSet();
     }
 }

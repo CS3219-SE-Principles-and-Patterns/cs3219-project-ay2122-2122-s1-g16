@@ -42,6 +42,7 @@ public class PairingServiceTest {
     @Test
     public void testPairing() throws ExecutionException, InterruptedException {
         synchronized (MatchMaking.class) {
+            MatchMaking.reset();
             ThreadPoolExecutor executor =
                     (ThreadPoolExecutor) Executors.newFixedThreadPool(6);
             SoftAssertions softly = new SoftAssertions();

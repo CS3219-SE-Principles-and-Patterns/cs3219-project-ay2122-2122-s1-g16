@@ -27,6 +27,7 @@ public class MatchMakingTest {
     @Test
     public void testMatch() throws InterruptedException {
         synchronized (MatchMaking.class) {
+            MatchMaking.reset();
             for (int j = 0; j < groupSize; j++) {
                 for (int i = 0; i < level; i++) {
                     Peer user = peers[i][j];
@@ -72,6 +73,7 @@ public class MatchMakingTest {
     @Test
     public void testUnmatch() throws InterruptedException {
         synchronized (MatchMaking.class) {
+            MatchMaking.reset();
             for (int j = 0; j < groupSize; j++) {
                 for (int i = 0; i < level; i++) {
                     Peer user = peers[i][j];
@@ -98,6 +100,7 @@ public class MatchMakingTest {
 
     @Test
     public void testFifo() throws InterruptedException {
+        MatchMaking.reset();
         synchronized (MatchMaking.class) {
             for (int j = 0; j < groupSize - 2; j++) {
                 Peer user = peers[0][j];

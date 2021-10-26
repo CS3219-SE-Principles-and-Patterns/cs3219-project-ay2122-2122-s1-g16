@@ -98,7 +98,6 @@ public class MatchMakingTest {
             Peer user = peers[0][j];
             MatchMaking.addPeer(user);
             if (j % 2 == 0) {
-                Thread.sleep(1000);
                 MatchMaking.addInactivePeer(user);
             }
         }
@@ -106,17 +105,17 @@ public class MatchMakingTest {
         Thread.sleep(1000);
 
         SoftAssertions softly = new SoftAssertions();
-        for (int j = 0; j < groupSize; j++) {
+        for (int j = 0; j < groupSize - 2; j++) {
             Peer user = peers[0][j];
-            if (j % 4 == 0) {
+            if (j % 4 == 1) {
                 softly.assertThat(user.getPeer().getUserId())
                         .as("User matching not in FIFO manner.")
-                        .isEqualTo(j + 2);
+                        .isEqualTo(user.getUserId() + 2);
                 validateInterviewer(user, user.getPeer());
-            } else if (j % 2 == 0) {
+            } else if (j % 2 == 1) {
                 softly.assertThat(user.getPeer().getUserId())
                         .as("User matching not in FIFO manner.")
-                        .isEqualTo(j - 2);
+                        .isEqualTo(user.getUserId() - 2);
                 validateInterviewer(user, user.getPeer());
             } else {
                 softly.assertThat(user.getPeer()).isNull();

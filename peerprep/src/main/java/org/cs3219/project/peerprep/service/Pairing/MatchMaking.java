@@ -26,6 +26,8 @@ public class MatchMaking {
 
     private volatile static MatchMaking singleton;
 
+    private volatile boolean interrupted = false;
+
     private MatchMaking () {}
 
     public static MatchMaking getSingleton() {
@@ -70,22 +72,22 @@ public class MatchMaking {
     }
 
     public void execute() {
-        for (int i = 0; i < getSingleton().LEVEL; i++) {
+        for (int i = 0; i < LEVEL; i++) {
             int difficulty = i;
-            getSingleton().executor.execute(() -> match(difficulty));
+            executor.execute(() -> match(difficulty));
         }
     }
 
-    private static void match(final int difficulty) {
+    private void match(final int difficulty) {
         Peer p1 = null;
         Peer p2 = null;
 
         // set to true if p1 is inactive when p2 is found in the previous match
         boolean halfMatch = false;
 
-        while (true) {
-            final BlockingDeque<Peer> queue = getSingleton().queues.get(difficulty);
-            final HashSet<Peer> inactiveUsers = getSingleton().inactiveSets.get(difficulty);
+        while (!interrupted) {
+            final BlockingDeque<Peer> queue = queues.get(difficulty);
+            final HashSet<Peer> inactiveUsers = inactiveSets.get(difficulty);
 
             // get the first active user
             if (halfMatch) {
@@ -126,5 +128,13 @@ public class MatchMaking {
         synchronized (setLocks[difficulty]) {
             inactiveSets.get(difficulty).add(peer);
         }
+    }
+
+    public static MatchMaking getNewForTest() {
+        return new MatchMaking();
+    }
+
+    public void interrupt() {
+        interrupted = true;
     }
 }

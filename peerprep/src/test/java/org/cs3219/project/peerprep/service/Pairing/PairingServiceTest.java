@@ -17,6 +17,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+/*
+Deprecated test with undesired isolation/integration level.
+ */
 @Disabled
 @SpringBootTest
 public class PairingServiceTest {

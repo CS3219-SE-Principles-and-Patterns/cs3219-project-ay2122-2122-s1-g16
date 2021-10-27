@@ -58,6 +58,8 @@ public class PairingIntegrationTest {
                             .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(2))
                             .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(0))
                             .andExpect(MockMvcResultMatchers.jsonPath("$.peer_id").value(1))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.interviewer").value(1))
+
                             .andReturn();
                 } catch (Exception e) {
                     softly.fail("Interrupted");
@@ -71,6 +73,7 @@ public class PairingIntegrationTest {
                             .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
                             .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(0))
                             .andExpect(MockMvcResultMatchers.jsonPath("$.peer_id").value(2))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.interviewer").value(0))
                             .andReturn();
                 } catch (Exception e) {
                     softly.fail("Interrupted");

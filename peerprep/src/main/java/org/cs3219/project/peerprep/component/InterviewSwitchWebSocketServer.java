@@ -51,7 +51,7 @@ public class InterviewSwitchWebSocketServer {
 
         try {
             sendMessage("Successfully connected!");
-            log.info("[InterviewSwitchWebSocketServer.onOpen] connected user:{}, total online users:{}", userId, onlineCount.get());
+            log.info("[InterviewSwitchWebSocketServer.onOpen] connected userId:{}, total online users:{}", userId, onlineCount.get());
         } catch (IOException e) {
             log.error("[InterviewSwitchWebSocketServer.onOpen] userId:{}, error: ", userId, e);
         }
@@ -63,7 +63,7 @@ public class InterviewSwitchWebSocketServer {
             webSocketServerMap.remove(userId);
             onlineCount.decrementAndGet();
         }
-        log.info("[InterviewSwitchWebSocketServer.onClose] exited user:{}, total online users:{}", userId, onlineCount.get());
+        log.info("[InterviewSwitchWebSocketServer.onClose] exited userId:{}, total online users:{}", userId, onlineCount.get());
     }
 
     @OnMessage

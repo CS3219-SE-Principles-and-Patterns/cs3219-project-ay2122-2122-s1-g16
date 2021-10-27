@@ -3,6 +3,7 @@ package org.cs3219.project.peerprep.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.cs3219.project.peerprep.common.api.CommonPage;
+import org.cs3219.project.peerprep.common.utils.StringUtils;
 import org.cs3219.project.peerprep.model.dto.interview.UserAttemptDetail;
 import org.cs3219.project.peerprep.model.dto.interview.UserAttemptedQuestion;
 import org.cs3219.project.peerprep.model.entity.InterviewQuestion;
@@ -29,7 +30,7 @@ public class HistoryServiceImpl implements HistoryService {
 
     @Override
     public CommonPage<UserAttemptedQuestion> getUserAttemptedQuestions(Long userId, Integer pageNum, Integer pageSize) {
-        log.info("[InterviewService.getUserAttemptedQuestions] userId:{}", userId);
+//        log.info("[InterviewService.getUserAttemptedQuestions] userId:{}", userId);
         List<UserAttemptedQuestion> userAttemptedQuestions = new ArrayList<>();
         Page<UserQuestionHistory> userQuestionHistoryPage = historyRepository.fetchAttemptedQuestionsByUserId(userId, pageNum, pageSize);
         for (UserQuestionHistory userQuestionHistory : userQuestionHistoryPage.getRecords()) {
@@ -54,7 +55,7 @@ public class HistoryServiceImpl implements HistoryService {
 
     @Override
     public UserAttemptDetail getUserAttemptDetail(Long historyId, Long userId) {
-        log.info("[InterviewService.getUserAttemptDetail] historyId:{}, userId:{}", historyId, userId);
+//        log.info("[InterviewService.getUserAttemptDetail] historyId:{}, userId:{}", historyId, userId);
         UserQuestionHistory userQuestionHistory = historyRepository.fetchAttemptedQuestionById(historyId);
         if (!userId.equals(userQuestionHistory.getUserId())) {
             return null;
@@ -67,12 +68,35 @@ public class HistoryServiceImpl implements HistoryService {
                 .userId(userId)
                 .questionId(interviewQuestion.getId())
                 .title(interviewQuestion.getTitle())
-                .question(interviewQuestion.getContent())
+                .question(StringUtils.convertSpecialCharFromJavaToHtml(interviewQuestion.getContent()))
                 .difficulty(interviewQuestion.getDifficulty())
-                // TODO: 18/10/21 Uncomment after solution table is constructed 
-//                .solution(interviewSolution.getContent())
+                .solution(StringUtils.convertSpecialCharFromJavaToHtml(interviewSolution.getContent()))
                 .attemptedAnswer(userQuestionHistory.getUserAnswer())
                 .attemptAt(userQuestionHistory.getCreatedAt())
                 .build();
+    }
+
+    @Override
+    public List<UserAttemptDetail> getUserAttemptDetailList(Long userId) {
+//        log.info("[InterviewService.getUserAttemptDetailList] userId:{}", userId);
+        List<UserQuestionHistory> userQuestionHistories = historyRepository.fetchAttemptedQuestionsByUserId(userId, false);
+        List<UserAttemptDetail> userAttemptDetails = new ArrayList<>();
+        for (UserQuestionHistory userQuestionHistory : userQuestionHistories) {
+            Long questionId = userQuestionHistory.getQuestionId();
+            InterviewQuestion interviewQuestion = questionRepository.fetchQuestionById(questionId);
+            InterviewSolution interviewSolution = questionRepository.fetchSolutionByQuestionId(questionId);
+            UserAttemptDetail userAttemptDetail = UserAttemptDetail.builder()
+                    .userId(userId)
+                    .questionId(questionId)
+                    .title(interviewQuestion.getTitle())
+                    .question(StringUtils.convertSpecialCharFromJavaToHtml(interviewQuestion.getContent()))
+                    .difficulty(interviewQuestion.getDifficulty())
+                    .solution(StringUtils.convertSpecialCharFromJavaToHtml(interviewSolution.getContent()))
+                    .attemptedAnswer(userQuestionHistory.getUserAnswer())
+                    .attemptAt(userQuestionHistory.getCreatedAt())
+                    .build();
+            userAttemptDetails.add(userAttemptDetail);
+        }
+        return userAttemptDetails;
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,10 +28,10 @@ public class InterviewServiceImpl implements InterviewService {
 
     @Override
     public InterviewDetailsResponse getInterviewDetails(InterviewDetailsRequest interviewDetailsRequest) {
-        log.info("[InterviewService.getInterviewDetails] request:{}", interviewDetailsRequest);
+//        log.info("[InterviewService.getInterviewDetails] request:{}", interviewDetailsRequest);
         // Retrieve user's unattempted questions
         List<InterviewQuestion> interviewQuestions = questionRepository.fetchQuestionsByDifficulty(interviewDetailsRequest.getDifficulty());
-        List<UserQuestionHistory> userQuestionHistories = historyRepository.fetchAttemptedQuestionsByUserId(interviewDetailsRequest.getUserId());
+        List<UserQuestionHistory> userQuestionHistories = historyRepository.fetchAttemptedQuestionsByUserId(interviewDetailsRequest.getUserId(), true);
         List<Long> attemptedQuestionIds = userQuestionHistories.stream().map(UserQuestionHistory::getQuestionId).collect(Collectors.toList());
         List<InterviewQuestion> unattemptedQuestions = interviewQuestions.stream()
                 .filter(interviewQuestion -> !attemptedQuestionIds.contains(interviewQuestion.getId()))
@@ -50,26 +49,21 @@ public class InterviewServiceImpl implements InterviewService {
             interviewQuestion = unattemptedQuestions.get(randomNumber);
         }
 
+        InterviewSolution interviewSolution = questionRepository.fetchSolutionByQuestionId(interviewQuestion.getId());
         String formatQuestionBody = StringUtils.convertSpecialCharFromJavaToHtml(interviewQuestion.getContent());
-        InterviewDetailsResponse interviewResponse = InterviewDetailsResponse.builder()
+        String formatSolutionBody = StringUtils.convertSpecialCharFromJavaToHtml(interviewSolution.getContent());
+        return InterviewDetailsResponse.builder()
                 .questionId(interviewQuestion.getId())
                 .title(interviewQuestion.getTitle())
                 .question(formatQuestionBody)
                 .difficulty(interviewQuestion.getDifficulty())
+                .solution(formatSolutionBody)
                 .build();
-
-        // TODO: 14/10/21 Insert solutions into the DB
-        // Retrieve and return solution if the user is interviewer
-        Optional<InterviewSolution> interviewSolution = Optional.ofNullable(questionRepository.fetchSolutionByQuestionId(interviewQuestion.getId()));
-        interviewSolution.ifPresentOrElse(solution -> interviewResponse.setSolution(solution.getContent()),
-                () -> interviewResponse.setSolution("Unavailable"));
-
-        return interviewResponse;
     }
 
     @Override
     public SaveAnswerResponse saveUserAnswer(SaveAnswerRequest saveAnswerRequest) {
-        log.info("[InterviewService.saveUserAnswer] request:{}", saveAnswerRequest);
+//        log.info("[InterviewService.saveUserAnswer] request:{}", saveAnswerRequest);
         UserQuestionHistory userQuestionHistory = UserQuestionHistory.builder()
                 .userId(saveAnswerRequest.getUserId())
                 .questionId(saveAnswerRequest.getQuestionId())

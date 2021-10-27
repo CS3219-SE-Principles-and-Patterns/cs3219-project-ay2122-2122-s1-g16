@@ -23,12 +23,16 @@ public class HistoryRepositoryImpl implements HistoryRepository {
     private int dayDuration;
 
     @Override
-    public List<UserQuestionHistory> fetchAttemptedQuestionsByUserId(Long userId) {
+    public List<UserQuestionHistory> fetchAttemptedQuestionsByUserId(Long userId, boolean isInterview) {
         QueryWrapper<UserQuestionHistory> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id", userId);
-        // Get user's attempted questions within dayDuration before current time
-        Timestamp startTime = new Timestamp(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(dayDuration));
-        wrapper.ge("created_at", startTime);
+        if (isInterview) {
+            // Get user's attempted questions within dayDuration before current time
+            Timestamp startTime = new Timestamp(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(dayDuration));
+            wrapper.ge("created_at", startTime);
+        } else {
+            wrapper.orderByDesc("created_at");
+        }
         return userQuestionHistoryMapper.selectList(wrapper);
     }
 

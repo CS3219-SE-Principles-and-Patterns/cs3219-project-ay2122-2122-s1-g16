@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 Deprecated test with undesired isolation/integration level.
  */
 @Disabled
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PairingServiceTest {
 
     private int level = 3;

@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/history")
 public class HistoryController {
@@ -35,5 +37,11 @@ public class HistoryController {
                                                                                   @RequestParam Long userId) {
         UserAttemptDetail userAttemptDetail = historyService.getUserAttemptDetail(historyId, userId);
         return new ResponseEntity<>(CommonResponse.success(userAttemptDetail), HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<CommonResponse<List<UserAttemptDetail>>> getUserAttemptDetailList(@PathVariable Long userId) {
+        List<UserAttemptDetail> userAttemptDetailList = historyService.getUserAttemptDetailList(userId);
+        return new ResponseEntity<>(CommonResponse.success(userAttemptDetailList), HttpStatus.OK);
     }
 }

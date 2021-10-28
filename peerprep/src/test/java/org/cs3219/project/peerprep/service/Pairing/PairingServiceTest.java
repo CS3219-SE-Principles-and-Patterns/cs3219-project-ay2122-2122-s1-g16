@@ -3,7 +3,9 @@ package org.cs3219.project.peerprep.service.Pairing;
 import org.assertj.core.api.SoftAssertions;
 import org.cs3219.project.peerprep.model.dto.PairingRequest;
 import org.cs3219.project.peerprep.model.dto.PairingResponse;
+import org.cs3219.project.peerprep.service.PairingService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,12 +17,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+/*
+Deprecated test with undesired isolation/integration level.
+ */
+@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PairingServiceTest {
 
-    private static int level = 3;
+    private int level = 3;
 
-    private static int groupSize = 2;
+    private int groupSize = 2;
 
     private PairingRequest[] requests = new PairingRequest[level * groupSize];
 
@@ -30,10 +36,10 @@ public class PairingServiceTest {
     @BeforeEach
     public void init() {
         for (int i = 0; i < level * groupSize; i++) {
-            Long userId = (long) (i + 1);
+            Long userId = (long) (i);
             PairingRequest request = PairingRequest.builder()
                     .userId(userId)
-                    .difficulty(i / groupSize)
+                    .difficulty(i % level)
                     .build();
             requests[i] = request;
         }
@@ -41,51 +47,59 @@ public class PairingServiceTest {
 
     @Test
     public void testPairing() throws ExecutionException, InterruptedException {
-        ThreadPoolExecutor executor =
-                (ThreadPoolExecutor) Executors.newFixedThreadPool(6);
-        SoftAssertions softly = new SoftAssertions();
-        List<Future<PairingResponse>> futures = new ArrayList<>();
+        synchronized (MatchMaking.class) {
+            // MatchMaking.reset();
+            ThreadPoolExecutor executor =
+                    (ThreadPoolExecutor) Executors.newFixedThreadPool(6);
+            SoftAssertions softly = new SoftAssertions();
+            List<Future<PairingResponse>> futures = new ArrayList<>();
 
-        for (int i = 0; i < level * groupSize; i++) {
-            PairingRequest request = requests[i];
-            Future<PairingResponse> future = executor.submit(() -> {
-                try {
-                    return pairingService.getPairingResult(request);
-                } catch (InterruptedException e) {
-                    softly.fail("Pairing service interrupted.");
-                    return null;
-                }
-            });
-            futures.add(future);
-        }
-
-        long[] peerIds = new long[level * groupSize];
-
-        for (Future<PairingResponse> future : futures) {
-            PairingResponse response = future.get();
-            long userId = response.getUserId();
-            long peerId = response.getPeerId();
-            int difficulty = response.getDifficulty();
-            int requestPos = (int) (userId - 1);
-            PairingRequest request = requests[requestPos];
-
-            softly.assertThat(userId)
-                    .as("Unmatched userId in request and response")
-                    .isEqualTo(request.getUserId());
-            softly.assertThat(difficulty)
-                    .as("Unmatched difficulty in request and response")
-                    .isEqualTo(request.getDifficulty());
-            softly.assertThat(requests[(int) (peerId - 1)].getDifficulty())
-                    .as("Unmatched difficulty for user and peer.")
-                    .isEqualTo(difficulty);
-
-            if (peerIds[requestPos] == 0) {
-                peerIds[requestPos] = peerId;
-            } else {
-                softly.assertThat(peerIds[requestPos])
-                        .as("User matched to multiple peers.")
-                        .isEqualTo(peerId);
+            for (int i = 0; i < level * groupSize; i++) {
+                PairingRequest request = requests[i];
+                Future<PairingResponse> future = executor.submit(() -> {
+                    try {
+                        return pairingService.getPairingResult(request);
+                    } catch (InterruptedException e) {
+                        softly.fail("Pairing service interrupted.");
+                        return null;
+                    }
+                });
+                futures.add(future);
             }
+
+            for (int i = 0; i < futures.size(); i++) {
+                Future<PairingResponse> future = futures.get(i);
+                PairingResponse response = future.get();
+                long userId = response.getUserId();
+                long peerId = response.getPeerId();
+                int difficulty = response.getDifficulty();
+                PairingRequest request = requests[i];
+
+                softly.assertThat(userId)
+                        .as("Unmatched userId in request and response")
+                        .isEqualTo(request.getUserId());
+                softly.assertThat(difficulty)
+                        .as("Unmatched difficulty in request and response")
+                        .isEqualTo(request.getDifficulty());
+                softly.assertThat(requests[(int) (peerId)].getDifficulty())
+                        .as("Unmatched difficulty for user and peer.")
+                        .isEqualTo(difficulty);
+
+                PairingResponse peerResponse = futures.get((int) peerId).get();
+                softly.assertThat(peerResponse.getPeerId())
+                        .as("User matched to multiple peers.")
+                        .isEqualTo(userId);
+                validateInterviewer(response, peerResponse);
+            }
+            softly.assertAll();
         }
+    }
+
+    private void validateInterviewer(PairingResponse r1, PairingResponse r2) {
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(r1.getInterviewer() + r2.getInterviewer())
+                .as("Interviewer and interviewee not assigned correctly.")
+                .isEqualTo(1);
+        softly.assertAll();
     }
 }

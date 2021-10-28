@@ -1,73 +1,79 @@
 package org.cs3219.project.peerprep.controller;
 
-import org.assertj.core.api.Assertions;
-import org.assertj.core.api.SoftAssertions;
+import org.cs3219.project.peerprep.model.dto.PairingRequest;
+import org.cs3219.project.peerprep.model.dto.PairingResponse;
+import org.cs3219.project.peerprep.service.PairingService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class PairingControllerTest {
-
     @Autowired
-    private MockMvc mvc;
+    private MockMvc mockMvc;
 
-    private static String baseUrl = "/api/v1/queue/";
-
-    private static String matchUrl = baseUrl + "match?id={id}&difficulty={difficulty}";
+    @MockBean
+    private PairingService pairingService;
 
     @Test
-    public void testInvalidDifficulty() throws Exception {
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders
-                .get(matchUrl, 1, 5)
-                .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andReturn();
+    void testMatch() throws Exception {
+        PairingRequest firstRequest = PairingRequest.builder().userId(123L).difficulty(2).build();
+        PairingRequest secondRequest = PairingRequest.builder().userId(234L).difficulty(2).build();
 
-        Assertions.assertThat(mvcResult.getResponse().getStatus())
-                .isEqualTo(404);
+        PairingResponse firstResponse = PairingResponse.builder()
+                .userId(firstRequest.getUserId())
+                .difficulty(firstRequest.getDifficulty())
+                .peerId(secondRequest.getUserId())
+                .interviewer(1)
+                .build();
+        PairingResponse secondResponse = PairingResponse.builder()
+                .userId(secondRequest.getUserId())
+                .difficulty(secondRequest.getDifficulty())
+                .peerId(firstRequest.getUserId())
+                .interviewer(0)
+                .build();
+
+        Mockito.when(pairingService.getPairingResult(firstRequest))
+                .thenReturn(firstResponse);
+        Mockito.when(pairingService.getPairingResult(secondRequest))
+                .thenReturn(secondResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/v1/match/queue?id=123&difficulty=2")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(123))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.difficulty").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.peer_id").value(234))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.interviewer").value(1))
+                .andReturn();
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/v1/match/queue?id=234&difficulty=2")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(234))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.difficulty").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.peer_id").value(123))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.interviewer").value(0))
+                .andReturn();
     }
 
     @Test
-    public void testMatching() {
-        ThreadPoolExecutor executor =
-                (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
-        SoftAssertions softly = new SoftAssertions();
-
-        executor.submit(() -> {
-            try {
-                mvc.perform(MockMvcRequestBuilders
-                        .get(matchUrl, 20170, 1)
-                        .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(20170))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(1))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.peer_id").value(11993))
-                        .andReturn();
-            } catch (Exception e) {
-                softly.fail("Interrupted");
-            }
-        });
-        executor.submit(() -> {
-            try {
-                mvc.perform(MockMvcRequestBuilders
-                        .get(matchUrl, 11993, 1)
-                        .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(11993))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.difficulty").value(1))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.peer_id").value(20170))
-                        .andReturn();
-            } catch (Exception e) {
-                softly.fail("Interrupted");
-            }
-        });
+    public void testUnmatch() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/v1/match/dequeue?id=123&difficulty=2")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
     }
 }

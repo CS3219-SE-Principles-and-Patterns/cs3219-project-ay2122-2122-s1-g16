@@ -1,6 +1,7 @@
 package org.cs3219.project.peerprep.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.cs3219.project.peerprep.common.api.CommonResponse;
 import org.cs3219.project.peerprep.common.utils.AuthenticationUtil;
 import org.cs3219.project.peerprep.model.dto.authentication.*;
@@ -23,6 +24,7 @@ import javax.validation.constraints.NotBlank;
 @RestController
 @RequestMapping(value = "/api/v1/account")
 @Validated
+@Slf4j
 public class AuthenticationController {
     @Autowired
     private final AuthenticationService authenticationService;
@@ -41,6 +43,7 @@ public class AuthenticationController {
 
     @PostMapping(path = "/register")
     public ResponseEntity<CommonResponse<RegistrationResponse>> register(@RequestBody @Valid RegistrationRequest request) throws MessagingException {
+
         User user = authenticationService.createNewUser(new User(request.getEmail(),
                 request.getNickname(),
                 request.getPassword(),

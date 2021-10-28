@@ -1,6 +1,7 @@
 package org.cs3219.project.peerprep.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.cs3219.project.peerprep.model.entity.User;
 import org.cs3219.project.peerprep.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class AuthenticationService {
     @Autowired
     private final UserService userService;

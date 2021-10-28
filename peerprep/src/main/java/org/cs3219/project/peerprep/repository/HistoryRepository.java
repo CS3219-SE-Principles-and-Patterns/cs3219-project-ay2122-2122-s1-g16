@@ -6,7 +6,7 @@ import org.cs3219.project.peerprep.model.entity.UserQuestionHistory;
 import java.util.List;
 
 public interface HistoryRepository {
-    List<UserQuestionHistory> fetchAttemptedQuestionsByUserId(Long userId);
+    List<UserQuestionHistory> fetchAttemptedQuestionsByUserId(Long userId, boolean isInterview);
 
     Page<UserQuestionHistory> fetchAttemptedQuestionsByUserId(Long userId, Integer pageNum, Integer pageSize);
 

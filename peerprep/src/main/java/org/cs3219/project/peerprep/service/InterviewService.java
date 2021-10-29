@@ -4,7 +4,7 @@ import org.cs3219.project.peerprep.model.dto.interview.*;
 
 
 public interface InterviewService {
-    InterviewDetailsResponse getInterviewDetails(InterviewDetailsRequest interviewRequest);
+    InterviewDetailsResponse getInterviewDetailsResponse(InterviewDetailsRequest interviewRequest);
 
     SaveAnswerResponse saveUserAnswer(SaveAnswerRequest saveAnswerRequest);
 }

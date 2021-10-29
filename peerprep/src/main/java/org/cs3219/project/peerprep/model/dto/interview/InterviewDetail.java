@@ -3,15 +3,9 @@ package org.cs3219.project.peerprep.model.dto.interview;
 import lombok.Builder;
 import lombok.Data;
 
-import java.sql.Timestamp;
-
 @Data
 @Builder
-public class UserAttemptDetail {
-    private Long userId;
-
-    private Long historyId;
-
+public class InterviewDetail {
     private Long questionId;
 
     private String title;
@@ -21,8 +15,4 @@ public class UserAttemptDetail {
     private Integer difficulty;
 
     private String solution;
-
-    private String attemptedAnswer;
-
-    private Timestamp attemptAt;
 }

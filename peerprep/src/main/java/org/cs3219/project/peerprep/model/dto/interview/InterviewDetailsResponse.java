@@ -1,18 +1,16 @@
 package org.cs3219.project.peerprep.model.dto.interview;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
 public class InterviewDetailsResponse {
-    private Long questionId;
 
-    private String title;
+    @JsonProperty("user_set")
+    private InterviewDetail userSet;
 
-    private String question;
-
-    private Integer difficulty;
-
-    private String solution;
+    @JsonProperty("peer_set")
+    private InterviewDetail peerSet;
 }

@@ -13,6 +13,7 @@ import org.cs3219.project.peerprep.service.InterviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,10 +61,15 @@ public class InterviewServiceImpl implements InterviewService {
         // Retrieve user's unattempted questions
         List<InterviewQuestion> interviewQuestions = questionRepository.fetchQuestionsByDifficulty(difficulty);
         List<UserQuestionHistory> userQuestionHistories = historyRepository.fetchAttemptedQuestionsByUserId(userId, true);
-        List<Long> attemptedQuestionIds = userQuestionHistories.stream().map(UserQuestionHistory::getQuestionId).collect(Collectors.toList());
-        List<InterviewQuestion> unattemptedQuestions = interviewQuestions.stream()
-                .filter(interviewQuestion -> !attemptedQuestionIds.contains(interviewQuestion.getId()))
-                .collect(Collectors.toList());
+        List<InterviewQuestion> unattemptedQuestions;
+        if (!userQuestionHistories.isEmpty()) {
+            List<Long> attemptedQuestionIds = userQuestionHistories.stream().map(UserQuestionHistory::getQuestionId).collect(Collectors.toList());
+            unattemptedQuestions = interviewQuestions.stream()
+                    .filter(interviewQuestion -> !attemptedQuestionIds.contains(interviewQuestion.getId()))
+                    .collect(Collectors.toList());
+        } else {
+            unattemptedQuestions = interviewQuestions;
+        }
 
         // Randomly choose from the question set
         RandomDataGenerator randomDataGenerator = new RandomDataGenerator();

@@ -2,10 +2,7 @@ package org.cs3219.project.peerprep.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cs3219.project.peerprep.common.api.CommonResponse;
-import org.cs3219.project.peerprep.model.dto.interview.InterviewDetailsRequest;
-import org.cs3219.project.peerprep.model.dto.interview.InterviewDetailsResponse;
-import org.cs3219.project.peerprep.model.dto.interview.SaveAnswerRequest;
-import org.cs3219.project.peerprep.model.dto.interview.SaveAnswerResponse;
+import org.cs3219.project.peerprep.model.dto.interview.*;
 import org.cs3219.project.peerprep.service.InterviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,13 +18,15 @@ public class InterviewController {
     private InterviewService interviewService;
 
     @GetMapping("/question")
-    public ResponseEntity<CommonResponse<InterviewDetailsResponse>> getInterviewDetails(@RequestParam Long userId,
+    public ResponseEntity<CommonResponse<InterviewDetailsResponse>> getInterviewDetails(@RequestParam("id") Long userId,
+                                                                                        @RequestParam("peer_id") Long peerId,
                                                                                         @RequestParam Integer difficulty) {
         InterviewDetailsRequest interviewRequest = InterviewDetailsRequest.builder()
                 .userId(userId)
+                .peerId(peerId)
                 .difficulty(difficulty)
                 .build();
-        InterviewDetailsResponse interviewResponse = interviewService.getInterviewDetails(interviewRequest);
+        InterviewDetailsResponse interviewResponse = interviewService.getInterviewDetailsResponse(interviewRequest);
         return new ResponseEntity<>(CommonResponse.success(interviewResponse), HttpStatus.OK);
     }
 

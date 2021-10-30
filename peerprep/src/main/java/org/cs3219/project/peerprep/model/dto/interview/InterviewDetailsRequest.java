@@ -8,5 +8,7 @@ import lombok.Data;
 public class InterviewDetailsRequest {
     private Long userId;
 
+    private Long peerId;
+
     private Integer difficulty;
 }

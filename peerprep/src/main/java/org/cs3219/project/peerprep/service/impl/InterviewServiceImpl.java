@@ -13,7 +13,10 @@ import org.cs3219.project.peerprep.service.InterviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,16 +29,47 @@ public class InterviewServiceImpl implements InterviewService {
     @Autowired
     private QuestionRepository questionRepository;
 
+    private static final Map<Long, InterviewDetail> userInterviewMap = new ConcurrentHashMap<>();
+
     @Override
-    public InterviewDetailsResponse getInterviewDetails(InterviewDetailsRequest interviewDetailsRequest) {
-//        log.info("[InterviewService.getInterviewDetails] request:{}", interviewDetailsRequest);
+    public InterviewDetailsResponse getInterviewDetailsResponse(InterviewDetailsRequest interviewDetailsRequest) {
+        Long userId = interviewDetailsRequest.getUserId();
+        Long peerId = interviewDetailsRequest.getPeerId();
+        Integer difficulty = interviewDetailsRequest.getDifficulty();
+
+        InterviewDetail userSet;
+        InterviewDetail peerSet;
+        // Check if the pair interview details are computed
+        synchronized (this) {
+            if (!userInterviewMap.containsKey(userId) || !userInterviewMap.containsKey(peerId)) {
+                userSet = getInterviewDetail(userId, difficulty);
+                peerSet = getInterviewDetail(peerId, difficulty);
+                userInterviewMap.put(userId, userSet);
+                userInterviewMap.put(peerId, peerSet);
+            } else {
+                userSet = userInterviewMap.get(userId);
+                peerSet = userInterviewMap.get(peerId);
+                userInterviewMap.remove(userId);
+                userInterviewMap.remove(peerId);
+            }
+        }
+
+        return InterviewDetailsResponse.builder().userSet(userSet).peerSet(peerSet).build();
+    }
+
+    private InterviewDetail getInterviewDetail(Long userId, Integer difficulty) {
         // Retrieve user's unattempted questions
-        List<InterviewQuestion> interviewQuestions = questionRepository.fetchQuestionsByDifficulty(interviewDetailsRequest.getDifficulty());
-        List<UserQuestionHistory> userQuestionHistories = historyRepository.fetchAttemptedQuestionsByUserId(interviewDetailsRequest.getUserId(), true);
-        List<Long> attemptedQuestionIds = userQuestionHistories.stream().map(UserQuestionHistory::getQuestionId).collect(Collectors.toList());
-        List<InterviewQuestion> unattemptedQuestions = interviewQuestions.stream()
-                .filter(interviewQuestion -> !attemptedQuestionIds.contains(interviewQuestion.getId()))
-                .collect(Collectors.toList());
+        List<InterviewQuestion> interviewQuestions = questionRepository.fetchQuestionsByDifficulty(difficulty);
+        List<UserQuestionHistory> userQuestionHistories = historyRepository.fetchAttemptedQuestionsByUserId(userId, true);
+        List<InterviewQuestion> unattemptedQuestions;
+        if (!userQuestionHistories.isEmpty()) {
+            List<Long> attemptedQuestionIds = userQuestionHistories.stream().map(UserQuestionHistory::getQuestionId).collect(Collectors.toList());
+            unattemptedQuestions = interviewQuestions.stream()
+                    .filter(interviewQuestion -> !attemptedQuestionIds.contains(interviewQuestion.getId()))
+                    .collect(Collectors.toList());
+        } else {
+            unattemptedQuestions = interviewQuestions;
+        }
 
         // Randomly choose from the question set
         RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
@@ -52,7 +86,7 @@ public class InterviewServiceImpl implements InterviewService {
         InterviewSolution interviewSolution = questionRepository.fetchSolutionByQuestionId(interviewQuestion.getId());
         String formatQuestionBody = StringUtils.convertSpecialCharFromJavaToHtml(interviewQuestion.getContent());
         String formatSolutionBody = StringUtils.convertSpecialCharFromJavaToHtml(interviewSolution.getContent());
-        return InterviewDetailsResponse.builder()
+        return InterviewDetail.builder()
                 .questionId(interviewQuestion.getId())
                 .title(interviewQuestion.getTitle())
                 .question(formatQuestionBody)
@@ -63,7 +97,6 @@ public class InterviewServiceImpl implements InterviewService {
 
     @Override
     public SaveAnswerResponse saveUserAnswer(SaveAnswerRequest saveAnswerRequest) {
-//        log.info("[InterviewService.saveUserAnswer] request:{}", saveAnswerRequest);
         UserQuestionHistory userQuestionHistory = UserQuestionHistory.builder()
                 .userId(saveAnswerRequest.getUserId())
                 .questionId(saveAnswerRequest.getQuestionId())

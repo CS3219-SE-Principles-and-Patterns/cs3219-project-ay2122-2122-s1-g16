@@ -37,7 +37,7 @@ custom:
     enable: true
   domain:
     backend: "https://peerprep-backend-service-mepxozmoha-as.a.run.app"
-    frontend: "http://localhost:3000" # TODO: change to frontend prod domain
+    frontend: "https://peerprep-g16.netlify.app"
   email:
     enable: true
 

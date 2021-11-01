@@ -2,6 +2,10 @@ server:
   port: 8080
   error:
     include-message: always
+  servlet:
+    session:
+      cookie:
+        secure: true
 
 spring:
   datasource:

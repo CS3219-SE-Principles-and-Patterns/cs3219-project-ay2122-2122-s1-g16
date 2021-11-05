@@ -13,5 +13,5 @@ steps:
     args: [ "push", "gcr.io/$PROJECT_ID/peerprep_backend" ]
   # deploy to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
-    args: [ 'alpha', 'run', 'deploy', 'peerprep-backend-service', '--cpu', '4', '--memory', '16Gi', '--timeout', '3600', '--concurrency', '1000', '--min-instances', '1', '--max-instances', '3',  '--platform', 'managed', '--ingress', 'all', '--allow-unauthenticated', '--no-cpu-throttling', '--image', 'gcr.io/$PROJECT_ID/peerprep_backend', '--region', 'asia-southeast1']
+    args: [ 'beta', 'run', 'deploy', 'peerprep-backend-service', '--cpu', '4', '--memory', '16Gi', '--timeout', '3600', '--concurrency', '1000', '--min-instances', '1', '--max-instances', '3',  '--platform', 'managed', '--ingress', 'all', '--allow-unauthenticated', '--no-cpu-throttling', '--image', 'gcr.io/$PROJECT_ID/peerprep_backend', '--region', 'asia-southeast1']
 images: [ 'gcr.io/$PROJECT_ID/peerprep_backend' ]

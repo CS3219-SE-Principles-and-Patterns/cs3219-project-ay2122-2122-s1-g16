@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class Peer {
 
-    private final long timeoutSeconds = 30L;
+    private final static long timeoutSeconds = 30L;
 
     private final Long userId;
 
@@ -47,7 +47,7 @@ public class Peer {
     }
 
     public boolean isTimeout() {
-        return this.creationTime.plusSeconds(timeoutSeconds).isAfter(LocalDateTime.now());
+        return this.creationTime.plusSeconds(timeoutSeconds).isBefore(LocalDateTime.now());
     }
 
     @Override

@@ -1,6 +1,10 @@
 package org.cs3219.project.peerprep.model.entity;
 
+import java.time.LocalDateTime;
+
 public class Peer {
+
+    private final long timeoutSeconds = 30L;
 
     private final Long userId;
 
@@ -10,9 +14,12 @@ public class Peer {
 
     private int interviewer;
 
-    public Peer(Long userId, int difficulty) {
+    private LocalDateTime creationTime;
+
+    public Peer(Long userId, int difficulty, LocalDateTime creationTime) {
         this.userId = userId;
         this.difficulty = difficulty;
+        this.creationTime = creationTime;
     }
 
     public Long getUserId() {
@@ -37,6 +44,10 @@ public class Peer {
 
     public int getInterviewer() {
         return this.interviewer;
+    }
+
+    public boolean isTimeout() {
+        return this.creationTime.plusSeconds(timeoutSeconds).isAfter(LocalDateTime.now());
     }
 
     @Override

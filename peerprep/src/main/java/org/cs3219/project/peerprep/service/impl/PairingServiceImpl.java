@@ -8,6 +8,8 @@ import org.cs3219.project.peerprep.service.PairingService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class PairingServiceImpl implements PairingService {
 
@@ -16,7 +18,7 @@ public class PairingServiceImpl implements PairingService {
     @Async
     @Override
     public PairingResponse getPairingResult(final PairingRequest pairingRequest) throws InterruptedException {
-        final Peer user = new Peer(pairingRequest.getUserId(), pairingRequest.getDifficulty());
+        final Peer user = new Peer(pairingRequest.getUserId(), pairingRequest.getDifficulty(), LocalDateTime.now());
         matchMaking.addPeer(user);
 
         while (true) {
@@ -34,7 +36,7 @@ public class PairingServiceImpl implements PairingService {
 
     @Override
     public void getExitPairingResult(final PairingRequest pairingRequest) {
-        final Peer user = new Peer(pairingRequest.getUserId(), pairingRequest.getDifficulty());
+        final Peer user = new Peer(pairingRequest.getUserId(), pairingRequest.getDifficulty(), LocalDateTime.now());
         matchMaking.addInactivePeer(user);
     }
 }

@@ -94,15 +94,15 @@ public class MatchMaking {
                 p1 = p2;
             } else {
                 while (queue.isEmpty()) {}
-                while (inactiveUsers.remove(p1 = queue.poll()) || p1 == null) {}
+                while (inactiveUsers.remove(p1 = queue.poll()) || p1 == null || p1.isTimeout()) {}
             }
 
             // get the second active user
             while (queue.isEmpty()) {}
-            while (inactiveUsers.remove(p2 = queue.poll()) || p2 == null) {}
+            while (inactiveUsers.remove(p2 = queue.poll()) || p2 == null || p2.isTimeout()) {}
 
             // recheck if the first user is active
-            if (inactiveUsers.remove(p1)) {
+            if (inactiveUsers.remove(p1) || p1.isTimeout()) {
                 halfMatch = true;
                 continue;
             }

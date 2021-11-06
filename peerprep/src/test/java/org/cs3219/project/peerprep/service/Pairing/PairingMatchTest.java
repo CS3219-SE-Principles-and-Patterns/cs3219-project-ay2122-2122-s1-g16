@@ -5,6 +5,8 @@ import org.cs3219.project.peerprep.model.entity.Peer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 public class PairingMatchTest {
 
     private final int level = 3;
@@ -23,7 +25,7 @@ public class PairingMatchTest {
     public void init() {
         for (int i = 0; i < level * groupSize; i++) {
             Long userId = (long) (i);
-            Peer user = new Peer(userId, i % level);
+            Peer user = new Peer(userId, i % level, LocalDateTime.now());
             peers[i] = user;
         }
     }

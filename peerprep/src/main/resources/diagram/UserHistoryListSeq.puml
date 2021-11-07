@@ -1,0 +1,44 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+title User Fetch Attempts History
+
+actor User
+box "Controller Layer"
+participant HistoryController
+end box
+box "Service Layer"
+participant HistoryService
+end box
+box "Persistence Layer"
+participant HistoryRepo
+participant QuestionRepo
+end box
+box "database"
+database Question
+database Solution
+database UserHistory
+end box
+
+User -> HistoryController : Request to retrieve list of attempts
+HistoryController -> HistoryService : Wrap and pass request parameters
+HistoryService -> HistoryRepo : Fetch attempt histories by userId
+HistoryRepo -> UserHistory : Order by descending
+UserHistory --> HistoryRepo
+HistoryRepo --> HistoryService
+loop For all current user's histories
+    HistoryService -> QuestionRepo : Get history's question details
+    QuestionRepo -> Question
+    Question --> QuestionRepo
+    QuestionRepo --> HistoryService
+    HistoryService -> QuestionRepo : Get history's solution details
+    QuestionRepo -> Solution
+    Solution --> QuestionRepo
+    QuestionRepo --> HistoryService
+    HistoryService -> HistoryService : Build list of history details
+end
+HistoryService --> HistoryController
+HistoryController --> User : Wrap the response with common format
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:User request for interview details;
+if (Check userId in the cache map) then (yes)
+    :Get details from the map;
+    :Remove current record;
+else (no)
+    :Get details from database;
+endif
+:Frontend display questions based on role;
+:Collaboration editing through websocket;
+:Switch role signal through websocket;
+if (isNormalLeave?) then (yes)
+    :Save user attempted answer;
+else (no)
+    :Do nothing;
+endif
+:Retrieve user attempts history;
+:Display the records with pages;
+
+stop
+
+@enduml

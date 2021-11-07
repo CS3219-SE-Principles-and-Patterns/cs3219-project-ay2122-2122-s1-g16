@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+title Lifecycle of user and WebsocketServer
+
+actor User1
+Participant WebsocketServer
+actor User2
+User1 -> WebsocketServer : Connect with userId 1
+User2 -> WebsocketServer : Connect with userId 2
+WebsocketServer -> WebsocketServer : Put in server map
+User1 -> WebsocketServer : Send message including peerId 2 and data
+WebsocketServer -> User2 : Data transfer
+User2 -> WebsocketServer : Send message including peerId 1 and data
+WebsocketServer -> User1 : Data transfer
+User1 -> WebsocketServer : Disconnect
+User2 -> WebsocketServer : Disconnect
+WebsocketServer -> WebsocketServer : Remove from server map
+@enduml

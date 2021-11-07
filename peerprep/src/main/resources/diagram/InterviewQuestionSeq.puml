@@ -1,0 +1,42 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+title User Fetch Interview Details
+
+actor User
+box "Controller Layer"
+participant InterviewController
+end box
+box "Service Layer"
+participant InterviewService
+end box
+box "Persistence Layer"
+participant QuestionRepo
+participant HistoryRepo
+end box
+box "database"
+database Question
+database Solution
+database UserHistory
+end box
+
+User -> InterviewController : Request to retrieve problem set
+InterviewController -> InterviewService : Wrap and pass request parameters
+InterviewService -> QuestionRepo : Fetch questions by difficulty
+QuestionRepo -> Question
+Question --> QuestionRepo
+InterviewService -> HistoryRepo : Fetch previous attempted questions
+HistoryRepo -> UserHistory
+UserHistory --> HistoryRepo
+InterviewService -> InterviewService : Filter out attempted questions
+InterviewService -> InterviewService : Randomly choose from the remaining questions
+InterviewService -> QuestionRepo : Fetch solution by questionId
+QuestionRepo -> Solution
+Solution --> QuestionRepo
+QuestionRepo -> InterviewService
+InterviewService -> InterviewService: Parse and convert content to HTML format
+InterviewService -> InterviewController : Wrap question and solution
+InterviewController --> User : Wrap the response with common format
+@enduml

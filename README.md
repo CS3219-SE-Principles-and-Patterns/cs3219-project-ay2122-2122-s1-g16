@@ -21,7 +21,10 @@ Note: this operation may require root previlege.
 6. So far, the tables have been set up.
 
 ### 2. Import interview question & solutions into database tables
-// TODO
+1. In our repo directory `./peerprep/src/main/resources/data/`, look for two csv files `Copy of leetcode questions.csv`
+and `Copy of leetcode solutions.csv` which contain the questions and solutions used for our application
+2. Simply use the MySQL visualization tool (MySQL Workbench, phpMyAdmin, etc.) to import `Copy of leetcode questions.csv`
+and `Copy of leetcode solutions.csv` into table `interview_questions` and table `interview_solutions` respectively.
 
 ### 3. Install local mail server
 A local mail server is needed if you want to register a new account or reset password in our app.

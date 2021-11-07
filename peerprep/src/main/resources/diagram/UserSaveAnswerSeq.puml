@@ -1,0 +1,22 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+title User Save Attempted Answer
+
+actor User
+participant InterviewController
+participant InterviewService
+participant HistoryRepo
+database UserHistory
+
+User -> InterviewController : Request to save answer
+InterviewController -> InterviewService : Wrap and pass request parameters
+InterviewService -> HistoryRepo : Save user's answer
+HistoryRepo -> UserHistory : Wrap to a data object
+UserHistory --> HistoryRepo
+HistoryRepo --> InterviewService
+InterviewService --> InterviewController
+InterviewController --> User : Wrap the response with common format
+@enduml

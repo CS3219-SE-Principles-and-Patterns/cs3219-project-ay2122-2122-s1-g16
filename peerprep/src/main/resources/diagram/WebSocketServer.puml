@@ -1,0 +1,15 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class WebSocketServer {
+- {static} AtomicInteger ONLINE_COUNT
+- {static} Map<String, WebSocketServer> WEBSOCKET_SERVER_MAP
+- Session session
+- String userId
++ void onOpen(Session session, String userId)
++ void onClose()
++ void onMessage(String message))
++ void onError(Throwable error)
++ void sendMessage(String message)
+}
+@enduml

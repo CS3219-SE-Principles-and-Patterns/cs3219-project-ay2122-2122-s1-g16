@@ -36,6 +36,8 @@ Here we use `MailDev`. Open your terminal, do the following to set up MailDev:
 4. For registering new account in our app, you need to go to this email portal to activate your account.
 5. For resetting password in our app, you need to go to this email portal to get the link for reset.
 
+For more information about `MailDev`, you may refer to this repository: https://github.com/maildev/maildev
+
 ### 4. Download backend `jar` file
 1. Download the `jar` file to an empty folder from the latest Release in our GitHub repository.
 2. `cd` to the folder where the `jar` file is downloaded.

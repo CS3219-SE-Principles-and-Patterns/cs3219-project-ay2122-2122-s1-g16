@@ -56,7 +56,7 @@ Run the `jar` file with command:
 Deployed domian: https://peerprep-g16.netlify.app/
 
 ### Steps to setup the frontend:
-In frontend folder:
+
 #### Using NPM:
 In the frontend folder, run:
 - `npm install`
